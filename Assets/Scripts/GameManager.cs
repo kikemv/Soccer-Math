@@ -13,6 +13,10 @@ public class GameManager : MonoBehaviour
     public Team team;
     public TeamRival teamRival;
 
+    //puntos
+    public int points;
+    public int operationsSolved;
+
     public bool gamePaused = false;
     public bool miniGameActive = false;
     public bool miniGameInProgress = false;  //para que no salte varias veces el decisionUI
@@ -71,6 +75,9 @@ public class GameManager : MonoBehaviour
         center = GameObject.FindGameObjectWithTag("Field").transform;
         team = FindObjectOfType<Team>();
         teamRival = FindObjectOfType<TeamRival>();
+
+        points = 0;
+        operationsSolved = 0;
     }
 
     private void Start()

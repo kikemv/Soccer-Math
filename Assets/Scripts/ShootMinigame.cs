@@ -200,11 +200,14 @@ public class ShootMinigame : MonoBehaviour
         {
             GameManager.Instance.CenterKickAway();
             GameScore.Instance.AddLocalGoal();
+            GameManager.Instance.points += 100;
+            GameManager.Instance.operationsSolved += 1;
         }
         else
         {
             GameManager.Instance.CenterKickLocal();
             GameScore.Instance.AddAwayGoal();
+            GameManager.Instance.points -= 100;
             foreach (Rival rival in teamRival.teamRivals)
             {
                 rival.ResetShoot();

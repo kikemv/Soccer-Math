@@ -60,7 +60,7 @@ public class CameraManager : MonoBehaviour
     {
         if (mainCamera.orthographicSize == 135f)
         {
-            mainCamera.orthographicSize = 300f;
+            mainCamera.orthographicSize = 200f;
         }
         else
         {

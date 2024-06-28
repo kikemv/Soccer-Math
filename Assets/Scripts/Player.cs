@@ -57,11 +57,11 @@ public class Player : MonoBehaviour
     public Sprite[] numbersSpirtesheet;
 
     //barra tiro
-    public Slider shootingSlider; // Referencia a la Slider para la carga del disparo
-    public float shootingChargeRate = 0.1f; // Tasa de carga del disparo por segundo
-    public float maxShootingCharge = 1.0f; // Valor máximo de carga del disparo
+    public Slider shootingSlider;
+    public float shootingChargeRate = 0.1f;
+    public float maxShootingCharge = 1.0f;
     public float shootingCharge = 0.0f;
-    public static float globalShootingCharge; // Variable estática para almacenar la carga global del disparo
+    public static float globalShootingCharge;
 
 
     private void Awake()
@@ -84,13 +84,19 @@ public class Player : MonoBehaviour
 
         if (playerRole == PlayerRole.Forward)
         {
-            startPosition = new Vector3(zone.position.x, zone.position.y - offset, zone.position.z);
+            startPosition = new Vector3(zone.position.x, 
+                                        zone.position.y - offset, 
+                                        zone.position.z);
         }
         else if (playerRole == PlayerRole.Mid)
         {
-            startPosition = new Vector3(zone.position.x, zone.position.y - offset / 2, zone.position.z);
+            startPosition = new Vector3(zone.position.x, 
+                                        zone.position.y - offset / 2, 
+                                        zone.position.z);
         }
-        else startPosition = new Vector3(zone.position.x, zone.position.y - offset / 6, zone.position.z);
+        else startPosition = new Vector3(zone.position.x, 
+                                         zone.position.y - offset / 6, 
+                                         zone.position.z);
 
         playerMovement.barraEstamina.gameObject.SetActive(false);
 
@@ -106,7 +112,7 @@ public class Player : MonoBehaviour
         {
             PosiblesPases();
 
-            // Actualizar la carga de la Slider si el jugador está en la zona de disparo y tiene posesión
+            // Actualizar Slider si el jugador está en la zona de disparo y tiene posesión
             if (transform.position.y > 650 && hasPossession)
             {
                 shootingSlider.gameObject.SetActive(true);
@@ -122,7 +128,8 @@ public class Player : MonoBehaviour
                     spriteIndicador.sprite = ind2;
                     shootingSlider.value = 1;
                     // tiro
-                    if (Input.GetKeyDown(KeyCode.T) && !GameManager.Instance.miniGameActive && !GameManager.Instance.decisionActive)   
+                    if (Input.GetKeyDown(KeyCode.T) && !GameManager.Instance.miniGameActive 
+                        && !GameManager.Instance.decisionActive)   
                     {
                         playerMovement.StopMovement();
                         GameManager.Instance.StartShootGame();
@@ -199,14 +206,16 @@ public class Player : MonoBehaviour
     public void PosiblesPases()
     {
         var smallestLeft = team.teamPlayers
-            .Where(t => t != team.currentPlayer[0] && t.transform.position.x < transform.position.x && t.transform.position.y <= transform.position.y)
+            .Where(t => t != team.currentPlayer[0] && t.transform.position.x < transform.position.x 
+                && t.transform.position.y <= transform.position.y)
             .OrderBy(t => Vector2.Distance(t.transform.position, transform.position))
             .FirstOrDefault();
 
         leftBotPlayer = smallestLeft;
 
         var smallestTopLeft = team.teamPlayers
-            .Where(t => t != team.currentPlayer[0] && t.transform.position.x < transform.position.x && t.transform.position.y > transform.position.y)
+            .Where(t => t != team.currentPlayer[0] && t.transform.position.x < transform.position.x 
+                && t.transform.position.y > transform.position.y)
             .OrderBy(t => Vector2.Distance(t.transform.position, transform.position))
             .FirstOrDefault();
 
@@ -214,14 +223,16 @@ public class Player : MonoBehaviour
 
 
         var smallestRight = team.teamPlayers
-            .Where(t => t != team.currentPlayer[0] && t.transform.position.x > transform.position.x && t.transform.position.y <= transform.position.y)
+            .Where(t => t != team.currentPlayer[0] && t.transform.position.x > transform.position.x 
+                && t.transform.position.y <= transform.position.y)
             .OrderBy(t => Vector2.Distance(t.transform.position, transform.position))
             .FirstOrDefault();
 
         rightBotPlayer = smallestRight;
 
         var smallestTopRight = team.teamPlayers
-            .Where(t => t != team.currentPlayer[0] && t.transform.position.x > transform.position.x && t.transform.position.y > transform.position.y)
+            .Where(t => t != team.currentPlayer[0] && t.transform.position.x > transform.position.x 
+                && t.transform.position.y > transform.position.y)
             .OrderBy(t => Vector2.Distance(t.transform.position, transform.position))
             .FirstOrDefault();
 
@@ -237,7 +248,9 @@ public class Player : MonoBehaviour
                 if (collision.CompareTag("Rival"))
                 {
                     currentRival = collision.gameObject.GetComponent<Rival>();
-                    if (Ball.Instance.attachedPlayer == this && !GameManager.Instance.decisionActive && !currentRival.rivalStates.isParalyzed)
+                    if (Ball.Instance.attachedPlayer == this && 
+                        !GameManager.Instance.decisionActive && 
+                        !currentRival.rivalStates.isParalyzed)
                     {
                         GameManager.Instance.n1 = number;
                         GameManager.Instance.n2 = currentRival.number;
@@ -268,7 +281,9 @@ public class Player : MonoBehaviour
                 if (collision.CompareTag("Rival"))
                 {
                     currentRival = collision.gameObject.GetComponent<Rival>();
-                    if (Ball.Instance.attachedPlayer == this && !GameManager.Instance.decisionActive && !currentRival.rivalStates.isParalyzed)
+                    if (Ball.Instance.attachedPlayer == this && 
+                        !GameManager.Instance.decisionActive && 
+                        !currentRival.rivalStates.isParalyzed)
                     {
                         GameManager.Instance.n1 = number;
                         GameManager.Instance.n2 = currentRival.number;

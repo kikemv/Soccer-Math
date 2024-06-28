@@ -107,8 +107,10 @@ public class RivalState : MonoBehaviour
 
                 centroZona = rival.offensiveZone.position;
                 tamanoZona = rival.offensiveZone.GetComponent<BoxCollider2D>().size;
-                limiteSuperior = new Vector3(centroZona.x + tamanoZona.x / 2, centroZona.y + tamanoZona.y / 2, 0f);
-                limiteInferior = new Vector3(centroZona.x - tamanoZona.x / 2, centroZona.y - tamanoZona.y / 2, 0f);
+                limiteSuperior = new Vector3(centroZona.x + tamanoZona.x / 2, 
+                                             centroZona.y + tamanoZona.y / 2, 0f);
+                limiteInferior = new Vector3(centroZona.x - tamanoZona.x / 2, 
+                                             centroZona.y - tamanoZona.y / 2, 0f);
 
                 UpdateOffensiveBehavior();
 
@@ -125,8 +127,10 @@ public class RivalState : MonoBehaviour
 
                 centroZona = rival.zone.position;
                 tamanoZona = rival.zone.GetComponent<BoxCollider2D>().size;
-                limiteSuperior = new Vector3(centroZona.x + tamanoZona.x / 2, centroZona.y + tamanoZona.y / 2, 0f);
-                limiteInferior = new Vector3(centroZona.x - tamanoZona.x / 2, centroZona.y - tamanoZona.y / 2, 0f);
+                limiteSuperior = new Vector3(centroZona.x + tamanoZona.x / 2, 
+                                             centroZona.y + tamanoZona.y / 2, 0f);
+                limiteInferior = new Vector3(centroZona.x - tamanoZona.x / 2, 
+                                             centroZona.y - tamanoZona.y / 2, 0f);
 
                 UpdateNeutralBehavior();
 
@@ -147,8 +151,10 @@ public class RivalState : MonoBehaviour
 
                 centroZona = rival.defensiveZone.position;
                 tamanoZona = rival.defensiveZone.GetComponent<BoxCollider2D>().size;
-                limiteSuperior = new Vector3(centroZona.x + tamanoZona.x / 2, centroZona.y + tamanoZona.y / 2, 0f);
-                limiteInferior = new Vector3(centroZona.x - tamanoZona.x / 2, centroZona.y - tamanoZona.y / 2, 0f);
+                limiteSuperior = new Vector3(centroZona.x + tamanoZona.x / 2, 
+                                             centroZona.y + tamanoZona.y / 2, 0f);
+                limiteInferior = new Vector3(centroZona.x - tamanoZona.x / 2, 
+                                             centroZona.y - tamanoZona.y / 2, 0f);
 
                 UpdateDefensiveBehavior();
 
@@ -213,7 +219,10 @@ public class RivalState : MonoBehaviour
                 {
                    MoveTo(Ball.Instance.transform);
                 }
-                else if (Ball.Instance.transform.position.x < limiteInferior.x || Ball.Instance.transform.position.x > limiteSuperior.x || Ball.Instance.transform.position.y < limiteInferior.y || Ball.Instance.transform.position.y > limiteSuperior.y)
+                else if (Ball.Instance.transform.position.x < limiteInferior.x || 
+                         Ball.Instance.transform.position.x > limiteSuperior.x || 
+                         Ball.Instance.transform.position.y < limiteInferior.y || 
+                         Ball.Instance.transform.position.y > limiteSuperior.y)
                 {
                     PatrolZone();
                 }
@@ -230,19 +239,25 @@ public class RivalState : MonoBehaviour
 
                 break;
             case RivalStates.Attacking:
-                if (limiteInferior.y <= Ball.Instance.transform.position.y && Ball.Instance.transform.position.y <= limiteSuperior.y)
+                if (limiteInferior.y <= Ball.Instance.transform.position.y && 
+                    Ball.Instance.transform.position.y <= limiteSuperior.y)
                 {
                     if (Ball.Instance.transform.position.x > transform.position.x)
                     {
-                        ballWithDistance.position = new Vector3(Ball.Instance.transform.position.x - distanciaX, Ball.Instance.transform.position.y, Ball.Instance.transform.position.z);
+                        ballWithDistance.position = 
+                            new Vector3(Ball.Instance.transform.position.x - distanciaX, 
+                                        Ball.Instance.transform.position.y, 
+                                        Ball.Instance.transform.position.z);
                     }
                     if (Ball.Instance.transform.position.x < transform.position.x)
                     {
-                        ballWithDistance.position = new Vector3(Ball.Instance.transform.position.x + distanciaX, Ball.Instance.transform.position.y, Ball.Instance.transform.position.z);
+                        ballWithDistance.position = 
+                            new Vector3(Ball.Instance.transform.position.x + distanciaX, 
+                                        Ball.Instance.transform.position.y, 
+                                        Ball.Instance.transform.position.z);
                     }
                     MoveTo(ballWithDistance);
                 }
-                //si no, se queda en el centro de la zona
                 else
                 {
                     PatrolZone();
@@ -262,14 +277,12 @@ public class RivalState : MonoBehaviour
 
     private void UpdateOffensiveBehavior()
     {
-        // Actualizar el comportamiento en función del estado actual
         switch (state)
         {
             case RivalStates.Idle:
-                // Lógica para el estado de reposo (Idle)
                 animator.SetTrigger("Idle");
-
-                if (rival.hasPossession && !isPassing)    // Para evitar múltiples llamadas al método de pase
+                // Para evitar múltiples llamadas al método de pase
+                if (rival.hasPossession && !isPassing)    
                 {
                     Invoke("PassAfterDelay", 2f);
                     isPassing = true;
@@ -295,8 +308,6 @@ public class RivalState : MonoBehaviour
                 break;
 
             case RivalStates.WithBall:
-                // Lógica para cuando tenga el balon
-
                 MoveTo(porteria);
 
                 if (GameManager.Instance.decisionActive)
@@ -322,7 +333,10 @@ public class RivalState : MonoBehaviour
                 {
                     MoveTo(Ball.Instance.transform);
                 }
-                else if (Ball.Instance.transform.position.x < limiteInferior.x || Ball.Instance.transform.position.x > limiteSuperior.x || Ball.Instance.transform.position.y < limiteInferior.y || Ball.Instance.transform.position.y > limiteSuperior.y)
+                else if (Ball.Instance.transform.position.x < limiteInferior.x || 
+                         Ball.Instance.transform.position.x > limiteSuperior.x || 
+                         Ball.Instance.transform.position.y < limiteInferior.y || 
+                         Ball.Instance.transform.position.y > limiteSuperior.y)
                 {
                     PatrolZone();
                 }
@@ -339,20 +353,25 @@ public class RivalState : MonoBehaviour
 
                 break;
             case RivalStates.Attacking:
-                // Lógica para el estado de atacar (Attacking)
-                if (limiteInferior.y <= Ball.Instance.transform.position.y && Ball.Instance.transform.position.y <= limiteSuperior.y)
+                if (limiteInferior.y <= Ball.Instance.transform.position.y && 
+                    Ball.Instance.transform.position.y <= limiteSuperior.y)
                 {
                     if (Ball.Instance.transform.position.x > transform.position.x)
                     {
-                        ballWithDistance.position = new Vector3(Ball.Instance.transform.position.x - distanciaX, Ball.Instance.transform.position.y, Ball.Instance.transform.position.z);
+                        ballWithDistance.position = 
+                            new Vector3(Ball.Instance.transform.position.x - distanciaX, 
+                                        Ball.Instance.transform.position.y, 
+                                        Ball.Instance.transform.position.z);
                     }
                     if (Ball.Instance.transform.position.x < transform.position.x)
                     {
-                        ballWithDistance.position = new Vector3(Ball.Instance.transform.position.x + distanciaX, Ball.Instance.transform.position.y, Ball.Instance.transform.position.z);
+                        ballWithDistance.position = 
+                            new Vector3(Ball.Instance.transform.position.x + distanciaX, 
+                                        Ball.Instance.transform.position.y, 
+                                        Ball.Instance.transform.position.z);
                     }
                     MoveTo(ballWithDistance);
                 }
-                //si no, se queda en el centro de la zona
                 else
                 {
                     PatrolZone();
@@ -372,14 +391,12 @@ public class RivalState : MonoBehaviour
 
     private void UpdateDefensiveBehavior()
     {
-        // Actualizar el comportamiento en función del estado actual
         switch (state)
         {
             case RivalStates.Idle:
-                // Lógica para el estado de reposo (Idle)
                 animator.SetTrigger("Idle");
-
-                if (rival.hasPossession && !isPassing)    // Para evitar múltiples llamadas al método de pase
+                // Para evitar múltiples llamadas al método de pase
+                if (rival.hasPossession && !isPassing) 
                 {
                     Invoke("PassAfterDelay", 2f);
                     isPassing = true;
@@ -387,8 +404,6 @@ public class RivalState : MonoBehaviour
 
                 break;
             case RivalStates.ThrowIn:
-                Debug.Log("estado thowin");
-
                 animator.SetTrigger("Idle");
 
                 if (!isPassing)    // Para evitar múltiples llamadas al método de pase
@@ -405,8 +420,6 @@ public class RivalState : MonoBehaviour
                 break;
 
             case RivalStates.WithBall:
-                // Lógica para cuando tenga el balon
-
                 MoveTo(porteria);
                 
                 if (GameManager.Instance.decisionActive)
@@ -433,7 +446,10 @@ public class RivalState : MonoBehaviour
                 {
                     MoveTo(Ball.Instance.transform);
                 }
-                else if (Ball.Instance.transform.position.x < limiteInferior.x || Ball.Instance.transform.position.x > limiteSuperior.x || Ball.Instance.transform.position.y < limiteInferior.y || Ball.Instance.transform.position.y > limiteSuperior.y)
+                else if (Ball.Instance.transform.position.x < limiteInferior.x || 
+                         Ball.Instance.transform.position.x > limiteSuperior.x || 
+                         Ball.Instance.transform.position.y < limiteInferior.y || 
+                         Ball.Instance.transform.position.y > limiteSuperior.y)
                 {
                     PatrolZone();
                 }
@@ -450,20 +466,25 @@ public class RivalState : MonoBehaviour
 
                 break;
             case RivalStates.Attacking:
-                // Lógica para el estado de atacar (Attacking)
-                if (limiteInferior.y <= Ball.Instance.transform.position.y && Ball.Instance.transform.position.y <= limiteSuperior.y)
+                if (limiteInferior.y <= Ball.Instance.transform.position.y && 
+                    Ball.Instance.transform.position.y <= limiteSuperior.y)
                 {
                     if (Ball.Instance.transform.position.x > transform.position.x)
                     {
-                        ballWithDistance.position = new Vector3(Ball.Instance.transform.position.x - distanciaX, Ball.Instance.transform.position.y, Ball.Instance.transform.position.z);
+                        ballWithDistance.position = 
+                            new Vector3(Ball.Instance.transform.position.x - distanciaX, 
+                                        Ball.Instance.transform.position.y, 
+                                        Ball.Instance.transform.position.z);
                     }
                     if (Ball.Instance.transform.position.x < transform.position.x)
                     {
-                        ballWithDistance.position = new Vector3(Ball.Instance.transform.position.x + distanciaX, Ball.Instance.transform.position.y, Ball.Instance.transform.position.z);
+                        ballWithDistance.position = 
+                            new Vector3(Ball.Instance.transform.position.x + distanciaX, 
+                                        Ball.Instance.transform.position.y, 
+                                        Ball.Instance.transform.position.z);
                     }
                     MoveTo(ballWithDistance);
                 }
-                //si no, se queda en el centro de la zona
                 else
                 {
                     PatrolZone();
@@ -495,16 +516,20 @@ public class RivalState : MonoBehaviour
         // Detiene el movimiento en el eje correspodiente si está en el límite
         if (!rival.hasPossession)
         {
-            if (estaEnElLimiteDerecho && Ball.Instance.transform.position.x > transform.position.x && Objective.position.x > transform.position.x)
+            if (estaEnElLimiteDerecho && Ball.Instance.transform.position.x > transform.position.x 
+                && Objective.position.x > transform.position.x)
                 movimiento.x = 0f;
 
-            if (estaEnElLimiteIzquierdo && Ball.Instance.transform.position.x < transform.position.x && Objective.position.x < transform.position.x)
+            if (estaEnElLimiteIzquierdo && Ball.Instance.transform.position.x < transform.position.x 
+                && Objective.position.x < transform.position.x)
                 movimiento.x = 0f;
 
-            if (estaEnElLimiteSuperior && Ball.Instance.transform.position.y > transform.position.y && Objective.position.y > transform.position.y)
+            if (estaEnElLimiteSuperior && Ball.Instance.transform.position.y > transform.position.y 
+                && Objective.position.y > transform.position.y)
                 movimiento.y = 0f;
 
-            if (estaEnElLimiteInferior && Ball.Instance.transform.position.y < transform.position.y && Objective.position.y < transform.position.y)
+            if (estaEnElLimiteInferior && Ball.Instance.transform.position.y < transform.position.y 
+                && Objective.position.y < transform.position.y)
                 movimiento.y = 0f;
         }
        
@@ -527,26 +552,20 @@ public class RivalState : MonoBehaviour
         }
         else if (teamState == TeamState.Offensive)
         {
-            // Verificar si hemos llegado al punto actual
             if (Vector3.Distance(transform.position, currentPatrolTarget) < 0.5f)
             {
-                // Seleccionar un nuevo punto de patrulla al azar
                 currentPatrolPointIndex = Random.Range(0, patrolPointsOffensive.Length);
                 currentPatrolTarget = patrolPointsOffensive[currentPatrolPointIndex];
             }
         }
         else
         {
-            // Verificar si hemos llegado al punto actual
             if (Vector3.Distance(transform.position, currentPatrolTarget) < 0.5f)
             {
-                // Seleccionar un nuevo punto de patrulla al azar
                 currentPatrolPointIndex = Random.Range(0, patrolPointsDefensive.Length);
                 currentPatrolTarget = patrolPointsDefensive[currentPatrolPointIndex];
             }
         }
-
-        // Crear un objeto temporal para usar MoveTo(Transform)
         GameObject tempTarget = new GameObject("TempPatrolTarget");
         tempTarget.transform.position = currentPatrolTarget;
         MoveTo(tempTarget.transform);
@@ -559,8 +578,12 @@ public class RivalState : MonoBehaviour
         //puntos para neutral
         centroZona = rival.zone.position;
         tamanoZona = rival.zone.GetComponent<BoxCollider2D>().size;
-        limiteSuperior = new Vector3(centroZona.x + tamanoZona.x / 2, centroZona.y + tamanoZona.y / 2, 0f);
-        limiteInferior = new Vector3(centroZona.x - tamanoZona.x / 2, centroZona.y - tamanoZona.y / 2, 0f);
+        limiteSuperior = new Vector3(centroZona.x + tamanoZona.x / 2, 
+                                     centroZona.y + tamanoZona.y / 2, 
+                                     0f);
+        limiteInferior = new Vector3(centroZona.x - tamanoZona.x / 2, 
+                                     centroZona.y - tamanoZona.y / 2, 
+                                     0f);
 
         patrolPointsNeutral = new Vector3[4];
         for (int i = 0; i < patrolPointsNeutral.Length; i++)
@@ -573,8 +596,12 @@ public class RivalState : MonoBehaviour
         //puntos para offensive
         centroZona = rival.offensiveZone.position;
         tamanoZona = rival.offensiveZone.GetComponent<BoxCollider2D>().size;
-        limiteSuperior = new Vector3(centroZona.x + tamanoZona.x / 2, centroZona.y + tamanoZona.y / 2, 0f);
-        limiteInferior = new Vector3(centroZona.x - tamanoZona.x / 2, centroZona.y - tamanoZona.y / 2, 0f);
+        limiteSuperior = new Vector3(centroZona.x + tamanoZona.x / 2, 
+                                     centroZona.y + tamanoZona.y / 2, 
+                                     0f);
+        limiteInferior = new Vector3(centroZona.x - tamanoZona.x / 2, 
+                                     centroZona.y - tamanoZona.y / 2, 
+                                     0f);
 
         patrolPointsOffensive = new Vector3[4];
         for (int i = 0; i < patrolPointsOffensive.Length; i++)
@@ -587,8 +614,12 @@ public class RivalState : MonoBehaviour
         //puntos para defensive
         centroZona = rival.defensiveZone.position;
         tamanoZona = rival.defensiveZone.GetComponent<BoxCollider2D>().size;
-        limiteSuperior = new Vector3(centroZona.x + tamanoZona.x / 2, centroZona.y + tamanoZona.y / 2, 0f);
-        limiteInferior = new Vector3(centroZona.x - tamanoZona.x / 2, centroZona.y - tamanoZona.y / 2, 0f);
+        limiteSuperior = new Vector3(centroZona.x + tamanoZona.x / 2, 
+                                     centroZona.y + tamanoZona.y / 2, 
+                                     0f);
+        limiteInferior = new Vector3(centroZona.x - tamanoZona.x / 2, 
+                                     centroZona.y - tamanoZona.y / 2, 
+                                     0f);
 
         patrolPointsDefensive = new Vector3[4];
         for (int i = 0; i < patrolPointsDefensive.Length; i++)
@@ -607,10 +638,8 @@ public class RivalState : MonoBehaviour
     private void UpdateAnimatorParameters(Vector3 movement)
     {
 
-        // Normalizar el vector de movimiento para asegurarse de que la velocidad diagonal no sea mayor
         movement.Normalize();
 
-        // Obtener el ángulo del movimiento en radianes
         float angulo = Mathf.Atan2(movement.y, movement.x) * Mathf.Rad2Deg;
 
         // Ajustar el ángulo para asegurarse de que esté dentro del rango de 0 a 360 grados
@@ -619,10 +648,8 @@ public class RivalState : MonoBehaviour
             angulo += 360f;
         }
 
-        // Activar los triggers correspondientes según el ángulo de movimiento
         if (movement.magnitude > 0f)
         {
-
             // Determinar qué trigger activar según el ángulo
             if (angulo >= 45f && angulo < 135f)
             {
@@ -679,7 +706,8 @@ public class RivalState : MonoBehaviour
         {
             if (teammate != GetComponent<Rival>())
             {
-                float distanceToTeammate = Vector3.Distance(transform.position, teammate.transform.position);
+                float distanceToTeammate = Vector3.Distance(transform.position, 
+                                                            teammate.transform.position);
                 if (distanceToTeammate < shortestDistance)
                 {
                     shortestDistance = distanceToTeammate;
@@ -703,7 +731,6 @@ public class RivalState : MonoBehaviour
         // Reducir la opacidad del sprite para simular desactivación
         spriteRenderer.color = new Color(1f, 1f, 1f, 0.5f); // 50% de opacidad
 
-        // Detener el movimiento y la interacción del jugador
         col.enabled = false;
 
         //dar posesion al otro equipo
@@ -717,11 +744,9 @@ public class RivalState : MonoBehaviour
         GameManager.Instance.team.teamPossession = true;
         teamrival.teamPossession = false;
 
-        // Contador para la duración de la parálisis
         paralysisDuration -= Time.deltaTime;
         if (paralysisDuration <= 0f)
         {
-            // Volver a la normalidad después de la duración especificada
             Deparalyze();
         }
     }
@@ -746,7 +771,8 @@ public class RivalState : MonoBehaviour
         // Calcular las distancias de todos los rivales a la pelota
         foreach (Rival rival in teamrival.teamRivals)
         {
-            float distance = Vector3.Distance(rival.transform.position, Ball.Instance.transform.position);
+            float distance = Vector3.Distance(rival.transform.position, 
+                                              Ball.Instance.transform.position);
             distances.Add(distance);
             rivals.Add(rival);
         }
@@ -771,7 +797,6 @@ public class RivalState : MonoBehaviour
             }
         }
 
-        // Agregar los primeros 'numRivals' rivales a la lista de rivales más cercanos
         for (int i = 0; i < Mathf.Min(numRivals, rivals.Count); i++)
         {
             nearestRivals.Add(rivals[i]);
@@ -800,7 +825,8 @@ public class RivalState : MonoBehaviour
     {
         if (state == RivalStates.WithBall)
         {
-            if (collision.CompareTag("Jugador") && !GameManager.Instance.decisionActive && !collision.gameObject.GetComponent<Player>().playerMovement.isParalyzed)
+            if (collision.CompareTag("Jugador") && !GameManager.Instance.decisionActive && 
+                !collision.gameObject.GetComponent<Player>().playerMovement.isParalyzed)
             {
                 Debug.Log("colisionando con jugador");
                 Player currentPlayer = collision.gameObject.GetComponent<Player>();
@@ -815,7 +841,8 @@ public class RivalState : MonoBehaviour
     {
         if (state == RivalStates.WithBall)
         {
-            if (collision.CompareTag("Player") && !GameManager.Instance.decisionActive && !collision.gameObject.GetComponent<Player>().playerMovement.isParalyzed)
+            if (collision.CompareTag("Player") && !GameManager.Instance.decisionActive && 
+                !collision.gameObject.GetComponent<Player>().playerMovement.isParalyzed)
             {
                 Player currentPlayer = collision.gameObject.GetComponent<Player>();
                 GameManager.Instance.n1 = currentPlayer.number;

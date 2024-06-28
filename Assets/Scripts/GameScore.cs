@@ -24,6 +24,8 @@ public class GameScore : MonoBehaviour
     //final partido
     public TextMeshProUGUI finalText;
     public GameObject finalPanel;
+    public TextMeshProUGUI scoreText;
+
 
     private void Awake()
     {
@@ -86,13 +88,18 @@ public class GameScore : MonoBehaviour
     {
         finalPanel.SetActive(true);
         string resultado = localGoals + " - " + awayGoals;
+        string points = GameManager.Instance.points.ToString();
+        string opSolved = GameManager.Instance.operationsSolved.ToString();
+
         if (localGoals > awayGoals)
         {
+            GameManager.Instance.points += 300;
             finalText.text = "Congratulations. You have won " + resultado;
             finalPanel.GetComponent<Image>().color = Color.green;
         }
         else if (localGoals < awayGoals)
         {
+            GameManager.Instance.points += 100;
             finalText.text = "You have lost " + resultado;
             finalPanel.GetComponent<Image>().color = Color.red;
         }
@@ -101,5 +108,6 @@ public class GameScore : MonoBehaviour
             finalText.text = "Match ended in a draw";
             finalPanel.GetComponent<Image>().color = Color.blue;
         }
+        scoreText.text = "Number of correct operations: " + opSolved + "\nTotal points scored: " + points;
     }
 }

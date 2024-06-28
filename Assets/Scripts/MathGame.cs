@@ -20,11 +20,11 @@ public class MathGame : MonoBehaviour
     public Sprite[] sprites2;
 
     //cuenta atras
-    public RectTransform timeBar; // Referencia al RectTransform de la barra de tiempo
-    public Vector2 startPos; // Posición inicial de la barra de tiempo
-    public Vector2 endPos; // Posición final de la barra de tiempo
-    private float totalTime = 17.5f; // Tiempo total de la cuenta atrás
-    private float currentTime; // Tiempo actual restante
+    public RectTransform timeBar;
+    public Vector2 startPos;
+    public Vector2 endPos;
+    private float totalTime = 17.5f;
+    private float currentTime;
 
     private Animator animator;
 
@@ -65,7 +65,8 @@ public class MathGame : MonoBehaviour
     {
         currentTime = totalTime;
         startPos = new Vector2(0, -111);
-        endPos = new Vector2(-timeBar.rect.width, startPos.y); // Calcula la posición final hacia la izquierda
+        endPos = new Vector2(-timeBar.rect.width, startPos.y);
+        // Calcula la posición final hacia la izquierda
 
     }
 
@@ -108,7 +109,7 @@ public class MathGame : MonoBehaviour
         int playerAnswer;
         if (int.TryParse(playerInputField.text, out playerAnswer))
         {
-           gameManager.ResumeGame();   //se hace resume game antes para que luego se congele el jugador
+           gameManager.ResumeGame(); //se hace resume game antes para luego congelar jugador
            if (playerAnswer == correctAnswer)
            {
                 result = true;
@@ -142,6 +143,8 @@ public class MathGame : MonoBehaviour
             texto.sprite = correctText;
             jug1.sprite = team.currentPlayer[0].winSprite;
             jug2.sprite = team.currentPlayer[0].currentRival.loseSprite;
+            GameManager.Instance.points += 100;
+            GameManager.Instance.operationsSolved += 1;
         }
         else
         {
@@ -149,6 +152,7 @@ public class MathGame : MonoBehaviour
             texto.sprite = failText;
             jug1.sprite = team.currentPlayer[0].currentRival.winSprite;
             jug2.sprite = team.currentPlayer[0].loseSprite;
+            GameManager.Instance.points -= 50;
         }
         Invoke("DeactivateFondo", 2f);
         Invoke("DeactivateMiniGame", 3f);

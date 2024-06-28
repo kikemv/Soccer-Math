@@ -16,7 +16,6 @@ public class PlayerSwitching : MonoBehaviour
         team = GetComponent<Team>();
     }
 
-    // Start is called before the first frame update
     void Start()
     {
         SelectPlayerOnStart();
@@ -27,7 +26,7 @@ public class PlayerSwitching : MonoBehaviour
     {
         Player player = team.currentPlayer[0];
 
-        if (Ball.Instance.isBallAttached /*&& !player.playerMovement.isParalyzed*/)   //para que no se pueda cambiar mientras se recibe un pase
+        if (Ball.Instance.isBallAttached)
         {
 
             if (Input.GetKeyDown(KeyCode.LeftArrow))
