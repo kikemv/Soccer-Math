@@ -29,7 +29,9 @@ public class MenuManager : MonoBehaviour
     public GameObject[] tutorialPanels;
     public int currentPanelIndex = 0;
 
+    //sonidos
     public AudioClip menuMusic;
+    public AudioClip menuClick;
 
     void Start()
     {
@@ -41,11 +43,12 @@ public class MenuManager : MonoBehaviour
         tutorialButton.onClick.AddListener(ToggleTutorial);
         HideTutorial();
 
-        SoundController.Instance.PlayMusic(menuMusic);
+        SoundController.Instance.PlayMusic(menuMusic, GameSettings.Instance.musicVolume);
     }
 
     void ToggleTutorial()
     {
+        SoundController.Instance.PlaySound(menuClick, GameSettings.Instance.soundVolume);
         bool isActive = !tutorialObject.activeSelf;
         tutorialObject.SetActive(isActive);
         if (isActive)
@@ -57,17 +60,20 @@ public class MenuManager : MonoBehaviour
 
     public void HideTutorial()
     {
+        SoundController.Instance.PlaySound(menuClick, GameSettings.Instance.soundVolume);
         tutorialObject.SetActive(false);
     }
 
     public void ShowNextPanel()
     {
+        SoundController.Instance.PlaySound(menuClick, GameSettings.Instance.soundVolume);
         currentPanelIndex = Mathf.Min(currentPanelIndex + 1, tutorialPanels.Length - 1);
         ShowPanel(currentPanelIndex);
     }
 
     public void ShowPreviousPanel()
     {
+        SoundController.Instance.PlaySound(menuClick, GameSettings.Instance.soundVolume);
         currentPanelIndex = Mathf.Max(currentPanelIndex - 1, 0);
         ShowPanel(currentPanelIndex);
     }
@@ -83,6 +89,7 @@ public class MenuManager : MonoBehaviour
     void LoadScene(int levelIndex)
     {
         transition.SetTrigger("Start");
+        SoundController.Instance.PlaySound(menuClick, GameSettings.Instance.soundVolume);
         StartCoroutine(LoadTransition(levelIndex));
     }
 
@@ -181,6 +188,7 @@ public class MenuManager : MonoBehaviour
 
     public void CloseGame()
     {
+        SoundController.Instance.PlaySound(menuClick, GameSettings.Instance.soundVolume);
         Application.Quit();
     }
 }

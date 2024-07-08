@@ -7,7 +7,7 @@ public class ShootMinigame : MonoBehaviour
 {
     public Image goalBackground; // Imagen de fondo de la portería
 
-    private Animator animator;
+    public Animator animator;
 
     //cuenta atras
     public RectTransform timeBar; // Referencia al RectTransform de la barra de tiempo
@@ -38,6 +38,9 @@ public class ShootMinigame : MonoBehaviour
 
     //para saber de quien es el tiro
     public bool localShoot;
+
+    //para llamar solo una vez a la solucion cuando se acaba el tiempo
+    private bool timeEnded;
 
     private void Awake()
     {
@@ -74,8 +77,10 @@ public class ShootMinigame : MonoBehaviour
                 timeBar.anchoredPosition = Vector2.Lerp(endPos, startPos, normalizedTime);
             }
         }
-        else
+        else if (!timeEnded)
         {
+            timeEnded = true;
+            Debug.Log("Tiempo acabado");
             if (localShoot)
             {
                 animator.SetTrigger("ltsave");
@@ -103,6 +108,7 @@ public class ShootMinigame : MonoBehaviour
 
     public void OnAnswerSelected(int selectedOption)
     {
+        SoundController.Instance.StopMusic();
         if (selectedOption == GetCorrectOptionIndex())
         {
             if (localShoot)
@@ -123,7 +129,7 @@ public class ShootMinigame : MonoBehaviour
                 {
                     animator.SetTrigger("rbgoal");
                 }
-                Invoke("ResumeWithGoal", 5.5f);
+                Invoke("ResumeWithGoal", 5.55f);
             }
             else
             {
@@ -143,7 +149,7 @@ public class ShootMinigame : MonoBehaviour
                 {
                     animator.SetTrigger("rbsave");
                 }
-                Invoke("ResumeWithSave", 5.5f);
+                Invoke("ResumeWithSave", 5.55f);
             }
         }
         else   //si se escoge opcion incorrecta
@@ -166,7 +172,7 @@ public class ShootMinigame : MonoBehaviour
                 {
                     animator.SetTrigger("rbsave");
                 }
-                Invoke("ResumeWithSave", 5.5f);
+                Invoke("ResumeWithSave", 5.55f);
             }
             else
             {
@@ -186,10 +192,15 @@ public class ShootMinigame : MonoBehaviour
                 {
                     animator.SetTrigger("rbgoal");
                 }
-                Invoke("ResumeWithGoal", 5.5f);
+                Invoke("ResumeWithGoal", 5.55f);
             }
             
         }
+
+        //resetear barra
+        timeBar.gameObject.SetActive(false);
+        currentTime = 50f; //mas tiempo para que no se active otra vez
+        timeBar.anchoredPosition = startPos;
 
     }
 
@@ -408,5 +419,6 @@ public class ShootMinigame : MonoBehaviour
         option3.sprite = null;
         option4.sprite = null;
         currentTime = 20f;
+        timeEnded = false;
     }
 }

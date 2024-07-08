@@ -8,7 +8,6 @@ public class TeamRival : MonoBehaviour
     public bool teamPossession;
 
     public List<Rival> teamRivals;
-    public List<Player> currentRival;
 
     private void Awake()
     {

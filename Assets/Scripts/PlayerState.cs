@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public enum States
@@ -19,6 +20,8 @@ public class PlayerState : MonoBehaviour
     private Team team;
     private Animator animator;
     private AudioSource audioSource;
+
+    public TextMeshProUGUI formationText;
 
     //Calculo de la zona por la que se puede mover el jugador
     private Transform zone;
@@ -134,24 +137,43 @@ public class PlayerState : MonoBehaviour
         {
             zone = player.zone;
             teamState = "neutral";
-            Debug.Log("formacion neutrl");
+            ShowFormationMessage("Neutral");
         }
         if (Input.GetKeyDown(KeyCode.Alpha2))
         {
             zone = player.offensiveZone;
             teamState = "offensive";
-            Debug.Log("formacion ofensiva");
+            ShowFormationMessage("Offensive");
         }
         if (Input.GetKeyDown(KeyCode.Alpha3))
         {
             zone = player.defensiveZone;
             teamState = "defensive";
-            Debug.Log("formacion defensiva");
+            ShowFormationMessage("Defensive");
         }
         centroZona = zone.position;
         tamanoZona = zone.GetComponent<BoxCollider2D>().size;
         limiteSuperior = new Vector3(centroZona.x + tamanoZona.x / 2, centroZona.y + tamanoZona.y / 2, 0f);
         limiteInferior = new Vector3(centroZona.x - tamanoZona.x / 2, centroZona.y - tamanoZona.y / 2, 0f);
+    }
+
+    private void ShowFormationMessage(string message)
+    {
+        if (formationText != null)
+        {
+            formationText.text = message;
+            formationText.gameObject.SetActive(true);
+            StartCoroutine(HideFormationMessageAfterDelay(2f));
+        }
+    }
+
+    private IEnumerator HideFormationMessageAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        if (formationText != null)
+        {
+            formationText.gameObject.SetActive(false);
+        }
     }
 
     private void MoveTo(Transform Objective)

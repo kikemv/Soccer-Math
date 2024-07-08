@@ -12,9 +12,6 @@ public class Rival : MonoBehaviour
     public PlayerRole playerRole;
     public bool sacador = false;
 
-    public Rival leftPlayer;
-    public Rival rightPlayer;
-
     private Team team;
     private TeamRival teamRival;
 
@@ -47,10 +44,9 @@ public class Rival : MonoBehaviour
         rivalStates = GetComponent<RivalState>();
         ballPosition = transform.Find("BallPossition");
         numberSprite = transform.Find("number").gameObject.GetComponent<SpriteRenderer>();
-        shootingChargeRate = 0.2f;
+        shootingChargeRate = 0.4f;
     }
 
-    // Start is called before the first frame update
     void Start()
     {
         if (sacador) offset += 150;
@@ -70,12 +66,10 @@ public class Rival : MonoBehaviour
         shootingSlider.gameObject.SetActive(false);
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (hasPossession)
         {
-            PosiblesPases();
             if (transform.position.y < 400 && !GameManager.Instance.gamePaused && !rivalStates.isParalyzed)
             {
                 shootingSlider.gameObject.SetActive(true);
@@ -84,8 +78,10 @@ public class Rival : MonoBehaviour
                     shootingCharge += shootingChargeRate * Time.deltaTime;
                     shootingSlider.value = shootingCharge / maxShootingCharge;
                 }
-                else
+                else if(!GameManager.Instance.miniGameActive && !GameManager.Instance.decisionActive
+                         && !GameManager.Instance.shootGameActive)
                 {
+                    Debug.Log("Llamando al shootgame");
                     GameManager.Instance.StartShootGame();
                 }
             }
@@ -128,28 +124,6 @@ public class Rival : MonoBehaviour
     public void InGamePosition()
     {
         transform.position = zone.position;
-    }
-
-    public void PosiblesPases()
-    {
-        if (teamRival.currentRival != null && teamRival.currentRival.Count > 0)
-        {
-            var smallestLeft = teamRival.teamRivals
-            .Where(t => t != teamRival.currentRival[0] && t.transform.position.x < transform.position.x)
-            .OrderBy(t => Vector2.Distance(t.transform.position, transform.position))
-            .FirstOrDefault();
-
-            leftPlayer = smallestLeft;
-
-
-            var smallestRight = teamRival.teamRivals
-                .Where(t => t != teamRival.currentRival[0] && t.transform.position.x > transform.position.x)
-                .OrderBy(t => Vector2.Distance(t.transform.position, transform.position))
-                .FirstOrDefault();
-
-            rightPlayer = smallestRight;
-        }
-
     }
 
     private void OnTriggerStay2D(Collider2D other)

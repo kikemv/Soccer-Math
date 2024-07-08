@@ -70,6 +70,7 @@ public class RivalState : MonoBehaviour
     public bool isParalyzed = false;
 
     private bool isPassing = false;
+    public AudioClip passSound;
 
     private void Awake()
     {
@@ -281,12 +282,6 @@ public class RivalState : MonoBehaviour
         {
             case RivalStates.Idle:
                 animator.SetTrigger("Idle");
-                // Para evitar múltiples llamadas al método de pase
-                if (rival.hasPossession && !isPassing)    
-                {
-                    Invoke("PassAfterDelay", 2f);
-                    isPassing = true;
-                }
 
                 break;
             case RivalStates.ThrowIn:
@@ -395,12 +390,6 @@ public class RivalState : MonoBehaviour
         {
             case RivalStates.Idle:
                 animator.SetTrigger("Idle");
-                // Para evitar múltiples llamadas al método de pase
-                if (rival.hasPossession && !isPassing) 
-                {
-                    Invoke("PassAfterDelay", 2f);
-                    isPassing = true;
-                }
 
                 break;
             case RivalStates.ThrowIn:
@@ -685,7 +674,10 @@ public class RivalState : MonoBehaviour
 
     public void Passing(float passForce, Rival receiver)
     {
+        SoundController.Instance.PlaySound(passSound, GameSettings.Instance.soundVolume - 0.3f);
+
         Ball.Instance.isBallAttached = false;
+        Ball.Instance.attachedRival = null;
 
         var direction = (receiver.transform.position - Ball.Instance.transform.position).normalized;
 
@@ -826,7 +818,8 @@ public class RivalState : MonoBehaviour
         if (state == RivalStates.WithBall)
         {
             if (collision.CompareTag("Jugador") && !GameManager.Instance.decisionActive && 
-                !collision.gameObject.GetComponent<Player>().playerMovement.isParalyzed)
+                !collision.gameObject.GetComponent<Player>().playerMovement.isParalyzed
+                && !GameManager.Instance.miniGameActive)
             {
                 Debug.Log("colisionando con jugador");
                 Player currentPlayer = collision.gameObject.GetComponent<Player>();
@@ -841,8 +834,9 @@ public class RivalState : MonoBehaviour
     {
         if (state == RivalStates.WithBall)
         {
-            if (collision.CompareTag("Player") && !GameManager.Instance.decisionActive && 
-                !collision.gameObject.GetComponent<Player>().playerMovement.isParalyzed)
+            if (collision.CompareTag("Jugador") && !GameManager.Instance.decisionActive && 
+                !collision.gameObject.GetComponent<Player>().playerMovement.isParalyzed
+                && !GameManager.Instance.miniGameActive)
             {
                 Player currentPlayer = collision.gameObject.GetComponent<Player>();
                 GameManager.Instance.n1 = currentPlayer.number;

@@ -23,7 +23,6 @@ public class GameplayManeger : MonoBehaviour
 
     private List<int> assignedNumbers;
 
-
     private void Awake()
     {
         if (Instance == null)
@@ -37,11 +36,14 @@ public class GameplayManeger : MonoBehaviour
         SetZones();
     }
 
-    // Start is called before the first frame update
     void Start()
     {
         assignedNumbers = new List<int>();
         SetRandomNumber();
+
+        //pongo esto aqui en vez de en el gamemanager porque alli no se reproducen los sonidos iniciales
+        //SoundController.Instance.PlayMusic(GameManager.Instance.ambiente, GameSettings.Instance.soundVolume - 0.4f);
+        SoundController.Instance.PlaySound(GameManager.Instance.referee, GameSettings.Instance.soundVolume - 0.4f);
     }
 
     private void SetZones()

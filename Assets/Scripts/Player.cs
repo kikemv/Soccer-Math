@@ -62,6 +62,7 @@ public class Player : MonoBehaviour
     public float maxShootingCharge = 1.0f;
     public float shootingCharge = 0.0f;
     public static float globalShootingCharge;
+    public int shootRange = 825;
 
 
     private void Awake()
@@ -75,7 +76,7 @@ public class Player : MonoBehaviour
         ballPosition = transform.Find("BallPossition");
         teamRival = FindObjectOfType<TeamRival>(); ;
 
-        shootingChargeRate = 0.3f;
+        shootingChargeRate = 0.5f;
     }
 
     private void Start()
@@ -113,7 +114,7 @@ public class Player : MonoBehaviour
             PosiblesPases();
 
             // Actualizar Slider si el jugador está en la zona de disparo y tiene posesión
-            if (transform.position.y > 650 && hasPossession)
+            if (transform.position.y > shootRange && hasPossession)
             {
                 shootingSlider.gameObject.SetActive(true);
                 if (shootingCharge < maxShootingCharge)
@@ -136,7 +137,7 @@ public class Player : MonoBehaviour
                     }
                 }
             }
-            else if (transform.position.y < 650)
+            else if (transform.position.y < shootRange)
             {
                 resetShoot();
             }

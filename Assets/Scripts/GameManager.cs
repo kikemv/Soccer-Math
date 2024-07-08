@@ -52,6 +52,7 @@ public class GameManager : MonoBehaviour
     //pause
     public bool pauseOpened;
     public GameObject pausePanel;
+    public GameObject pauseSettingsPanel;
 
     public bool serveTeam = true;   //para ver quien saca
     public Transform center;
@@ -62,6 +63,7 @@ public class GameManager : MonoBehaviour
     public AudioClip referee;
     public AudioClip minigameMusic;
     public AudioClip decisionSound;
+    public AudioClip ambiente;
 
     private void Awake()
     {
@@ -125,6 +127,7 @@ public class GameManager : MonoBehaviour
     public void StartVersus()
     {
         HideDecisionUI();
+        SoundController.Instance.PlayMusic(minigameMusic, GameSettings.Instance.musicVolume - 0.8f);
         miniGameInProgress = true;
         GameScore.Instance.gameObject.SetActive(false);
         versus.gameObject.SetActive(true);
@@ -157,8 +160,10 @@ public class GameManager : MonoBehaviour
     {
         if (!shootGameActive)
         {
+            Debug.Log("empezando el shootgame");
             PauseGame();
             shootGame.gameObject.SetActive(true);
+            shootGame.animator.SetTrigger("open");
             shootGameActive = true;
             if (team.teamPossession)
             {
@@ -169,6 +174,7 @@ public class GameManager : MonoBehaviour
                 shootGame.localShoot = false;
             }
             shootGame.StartShootGame();
+            SoundController.Instance.PlayMusic(minigameMusic, GameSettings.Instance.musicVolume - 0.8f);
         }
     }
 
@@ -191,7 +197,6 @@ public class GameManager : MonoBehaviour
         }
 
         // Colocar al jugador que esté siendo manejado en el centro del campo junto al balón
-        Debug.Log(jugadorActual);
         jugadorActual.transform.position = center.position;
         jugadorActual.UserBrain();
         team.currentPlayer[1].AiBrain();
@@ -213,6 +218,7 @@ public class GameManager : MonoBehaviour
         foreach (Player player in team.teamPlayers)
         {
             player.ResetPosition();
+            player.hasPossession = false;
         }
 
         foreach (Rival rival in teamRival.teamRivals)
@@ -225,6 +231,7 @@ public class GameManager : MonoBehaviour
         Debug.Log(jugadorActual);
         jugadorActual.transform.position = center.position;
         jugadorActual.GainPossession();
+        jugadorActual.rivalStates.state = RivalStates.ThrowIn;
         
         //desparalizar si hay alguien paralizado
         foreach (Rival rival in teamRival.teamRivals)
@@ -323,10 +330,9 @@ public class GameManager : MonoBehaviour
         CenterKickLocal();
     }
 
-    public void OpenSettingsMenu()
+    public void OpenPauseSettings()
     {
-        //SceneManager.LoadScene("Prematch");
-        //ajustes de sonido
+        pauseSettingsPanel.SetActive(true);
     }
 
     public void BackToMainMenu()
@@ -337,11 +343,8 @@ public class GameManager : MonoBehaviour
     //sonidos
     public void RefereeSound()
     {
-        SoundController.Instance.PlaySound(referee, 0.3f);
+        SoundController.Instance.PlaySound(referee, GameSettings.Instance.soundVolume - 0.4f);
     }
 
-    public void MinigameMusic()
-    {
-        SoundController.Instance.PlayMusic(minigameMusic);
-    }
+
 }

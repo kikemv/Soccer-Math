@@ -91,7 +91,7 @@ public class PlayerSwitching : MonoBehaviour
 
     private void Passing(Player receiver)
     {
-        SoundController.Instance.PlaySound(passSound, 0.3f);
+        SoundController.Instance.PlaySound(passSound, GameSettings.Instance.soundVolume - 0.3f);
 
         var direction = (receiver.transform.position - Ball.Instance.transform.position).normalized;
 

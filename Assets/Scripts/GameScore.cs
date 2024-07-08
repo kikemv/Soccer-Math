@@ -26,6 +26,10 @@ public class GameScore : MonoBehaviour
     public GameObject finalPanel;
     public TextMeshProUGUI scoreText;
 
+    public AudioClip pitidoFinal;
+
+    //puntos
+    public TextMeshProUGUI pointsUI;
 
     private void Awake()
     {
@@ -53,6 +57,8 @@ public class GameScore : MonoBehaviour
 
             // Actualizar otros elementos del UI si es necesario
         }
+
+        pointsUI.text = "PTS: " + GameManager.Instance.points.ToString();
     }
 
     void UpdateTimeUI()
@@ -86,6 +92,7 @@ public class GameScore : MonoBehaviour
 
     private void EndGame()
     {
+        SoundController.Instance.PlaySound(pitidoFinal, GameSettings.Instance.soundVolume - 0.2f);
         finalPanel.SetActive(true);
         string resultado = localGoals + " - " + awayGoals;
         string points = GameManager.Instance.points.ToString();

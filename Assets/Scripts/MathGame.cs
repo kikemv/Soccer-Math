@@ -47,6 +47,11 @@ public class MathGame : MonoBehaviour
 
     public Team team;
 
+    //sonidos
+    public AudioClip celebration;
+    public AudioClip missCelebration;
+    public AudioClip correctSound;
+    public AudioClip incorrectSound;
 
     private void Awake()
     {
@@ -80,6 +85,7 @@ public class MathGame : MonoBehaviour
             if (currentTime > 15.0f)
             {
                 //nada
+                timeBar.gameObject.SetActive(false);
             }
             else
             {
@@ -127,8 +133,12 @@ public class MathGame : MonoBehaviour
             
             ResetMinigame();
             animator.SetTrigger("Close");
+
+            //resetear barra
             timeBar.gameObject.SetActive(false);
-            currentTime = 17.5f;
+            currentTime = 50f; //mas tiempo para que no se active otra vez
+            timeBar.anchoredPosition = startPos;
+
             Invoke("CallAnswer", 0.5f);
 
         }
@@ -136,9 +146,11 @@ public class MathGame : MonoBehaviour
 
     public void CallAnswer()
     {
+        SoundController.Instance.StopMusic();
         answer.SetActive(true);
         if (result)
         {
+            SoundController.Instance.PlaySound(celebration, GameSettings.Instance.soundVolume - 0.3f);
             fondo.sprite = correctFondo;
             texto.sprite = correctText;
             jug1.sprite = team.currentPlayer[0].winSprite;
@@ -148,6 +160,7 @@ public class MathGame : MonoBehaviour
         }
         else
         {
+            SoundController.Instance.PlaySound(missCelebration, GameSettings.Instance.soundVolume - 0.1f);
             fondo.sprite = failFondo;
             texto.sprite = failText;
             jug1.sprite = team.currentPlayer[0].currentRival.winSprite;
@@ -160,6 +173,11 @@ public class MathGame : MonoBehaviour
 
     private void DeactivateFondo()
     {
+        if (result)
+            SoundController.Instance.PlaySound(correctSound, GameSettings.Instance.soundVolume - 0.3f);
+        else
+            SoundController.Instance.PlaySound(incorrectSound, GameSettings.Instance.soundVolume);
+
         gameManager.fondoCesped.SetActive(false);
     }
 

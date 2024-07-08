@@ -27,7 +27,7 @@ public class Ball : MonoBehaviour
     private float bordesup = 1309;
     public Goalkeeper goalkeeper;
     public Goalkeeper goalkeeperRival;
-    private float passForce = 100;
+    public float passForceKicks;
 
     //ultimos jugadores
     public Player lastPlayer;
@@ -50,7 +50,9 @@ public class Ball : MonoBehaviour
         team = FindObjectOfType<Team>();
         teamRival = FindObjectOfType<TeamRival>();
         sprite = GetComponent<SpriteRenderer>();
-    }
+
+        passForceKicks = 140;
+}
 
     private void Start()
     {
@@ -263,10 +265,12 @@ public class Ball : MonoBehaviour
             transform.position = goalkeeperRival.transform.position;
 
             //posesion para rival
+            lastPlayer.playerMovement.ActivateParalysis();
+            attachedPlayer = null;
             teamRival.teamPossession = true;
             team.teamPossession = false;
             team.currentPlayer[0].hasPossession = false;
-            attachedPlayer = null;
+            
 
             GameManager.Instance.ResetPositions();
 
@@ -274,7 +278,7 @@ public class Ball : MonoBehaviour
             var direction = (receiver[0].transform.position - transform.position).normalized;
             rb.constraints = RigidbodyConstraints2D.None;
             transform.SetParent(null);
-            rb.AddForce(direction * passForce, ForceMode2D.Impulse);
+            rb.AddForce(direction * passForceKicks, ForceMode2D.Impulse);
         }
 
         else
@@ -282,10 +286,12 @@ public class Ball : MonoBehaviour
             transform.position = goalkeeper.transform.position;
 
             //posesion para team
+            lastRival.rivalStates.ActivateParalysis();
+            attachedRival = null;
             teamRival.teamPossession = false;
             team.teamPossession = true;
-            teamRival.currentRival[0].hasPossession = false;
-            attachedRival = null;
+
+            
 
             GameManager.Instance.ResetPositions();
 
@@ -293,7 +299,7 @@ public class Ball : MonoBehaviour
             var direction = (receiver[0].transform.position - transform.position).normalized;
             rb.constraints = RigidbodyConstraints2D.None;
             transform.SetParent(null);
-            rb.AddForce(direction * passForce, ForceMode2D.Impulse);
+            rb.AddForce(direction * passForceKicks, ForceMode2D.Impulse);
         }
 
     }

@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -7,7 +6,6 @@ using UnityEngine.UI;
 
 public class GameSettings : MonoBehaviour
 {
-
     public static GameSettings Instance;
 
     public enum Difficulty
@@ -20,22 +18,8 @@ public class GameSettings : MonoBehaviour
     public Difficulty difficulty = Difficulty.Easy;
     public int matchDurationInMinutes = 5;
 
-    //botones
-    public Button playButton;
-    public Button easyButton;
-    public Button mediumButton;
-    public Button hardButton;
-
-    public Slider durationSlider;
-    public TextMeshProUGUI timeText;
-
-
-    public float soundVolume = 1.0f; // Volumen de efectos de sonido
-    public float musicVolume = 1.0f; // Volumen de la música
-    public Slider soundVolumeSlider; // Nuevo slider para ajustar el volumen de efectos de sonido
-    public TextMeshProUGUI soundText;
-    public Slider musicVolumeSlider; // Nuevo slider para ajustar el volumen de la música
-    public TextMeshProUGUI musicText;
+    public float soundVolume = 100f; // Volumen de efectos de sonido
+    public float musicVolume = 100f; // Volumen de la música
 
     public Animator transition;
     public AudioClip menuMusic;
@@ -43,67 +27,90 @@ public class GameSettings : MonoBehaviour
     private void Awake()
     {
         if (Instance == null)
+        {
             Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
         else
+        {
             Destroy(gameObject);
+        }
 
-        DontDestroyOnLoad(gameObject);
-
-        playButton.onClick.AddListener(() => LoadScene(2)); //cambiar luego al menu principal
-        easyButton.onClick.AddListener(EasyPressed);
-        mediumButton.onClick.AddListener(MediumPressed);
-        hardButton.onClick.AddListener(HardPressed);
-
-        durationSlider.onValueChanged.AddListener(UpdateMatchDuration);
-        soundVolumeSlider.onValueChanged.AddListener(UpdateSoundVolume); // Agrega listener para ajustar el volumen de efectos de sonido
-        musicVolumeSlider.onValueChanged.AddListener(UpdateMusicVolume); // Agrega listener para ajustar el volumen de la música
-
-        SoundController.Instance.PlayMusic(menuMusic);
+        SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
-    void LoadScene(int levelIndex)
+    private void Start()
     {
-        transition.SetTrigger("Start");
+        if (SoundController.Instance != null)
+        {
+            SoundController.Instance.PlayMusic(menuMusic, musicVolume);
+        }
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        // Reproduce la música en ajustes
+        if (scene.buildIndex == 1)
+        {
+            if (SoundController.Instance != null)
+            {
+                SoundController.Instance.PlayMusic(menuMusic, musicVolume);
+            }
+        }
+    }
+
+    public void LoadScene(int levelIndex)
+    {
+        if (transition != null)
+        {
+            transition.SetTrigger("Start");
+        }
         StartCoroutine(LoadTransition(levelIndex));
     }
 
-    IEnumerator LoadTransition(int levelIndex)
+    private IEnumerator LoadTransition(int levelIndex)
     {
-
         yield return new WaitForSeconds(1f);
         SceneManager.LoadScene(levelIndex);
     }
 
-    void EasyPressed()
+    public void SetDifficulty(Difficulty newDifficulty)
     {
-        difficulty = Difficulty.Easy;
+        difficulty = newDifficulty;
     }
 
-    void MediumPressed()
+    public void SetMatchDuration(int minutes)
     {
-        difficulty = Difficulty.Medium;
+        matchDurationInMinutes = minutes;
     }
 
-    void HardPressed()
+    public void SetSoundVolume(float volume)
     {
-        difficulty = Difficulty.Hard;
+        soundVolume = volume / 100;
     }
 
-    void UpdateMatchDuration(float value)
+    public void SetMusicVolume(float volume)
     {
-        matchDurationInMinutes = Mathf.RoundToInt(value);
-        timeText.text = value.ToString();
+        musicVolume = volume / 100;
     }
 
-    void UpdateSoundVolume(float value)
+    public Difficulty GetDifficulty()
     {
-        soundVolume = value/100;
-        soundText.text = value.ToString();
+        return difficulty;
     }
 
-    void UpdateMusicVolume(float value)
+    public int GetMatchDuration()
     {
-        musicVolume = value/100;
-        musicText.text = value.ToString();
+        return matchDurationInMinutes;
+    }
+
+    public float GetSoundVolume()
+    {
+        return soundVolume;
+    }
+
+    public float GetMusicVolume()
+    {
+        return musicVolume;
     }
 }
