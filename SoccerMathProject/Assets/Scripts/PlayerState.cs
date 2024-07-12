@@ -19,7 +19,6 @@ public class PlayerState : MonoBehaviour
     private PlayerMovement playerMovement;
     private Team team;
     private Animator animator;
-    private AudioSource audioSource;
 
     public TextMeshProUGUI formationText;
 
@@ -52,7 +51,6 @@ public class PlayerState : MonoBehaviour
         playerMovement = GetComponent<PlayerMovement>();
         team = GetComponentInParent<Team>();
         animator = GetComponent<Animator>();
-        audioSource = GetComponent<AudioSource>();
 
         ballWithDistance = new GameObject().transform;
         distanciaX = 200;
@@ -318,17 +316,11 @@ public class PlayerState : MonoBehaviour
             {
                 animator.SetTrigger("MoveRight");
             }
-            
-            //sonidos pasos
-            if(GameSettings.Instance.soundVolume != 0 || !GameManager.Instance.pauseOpened)
-                audioSource.volume = 0.015f;
-            else audioSource.volume = 0f;
         }
         else
         {
             //si no hay movimiento, desactivar la animación de movimiento
             animator.SetTrigger("Idle");
-            audioSource.volume = 0f;
         }
     }
 }

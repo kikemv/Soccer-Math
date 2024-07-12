@@ -103,7 +103,7 @@ public class RivalState : MonoBehaviour
         {
             case TeamState.Offensive:
                 passProbability = 8;
-                velocidadIA = 40;
+                velocidadIA = 42;
 
                 centroZona = rival.offensiveZone.position;
                 tamanoZona = rival.offensiveZone.GetComponent<BoxCollider2D>().size;
@@ -121,7 +121,7 @@ public class RivalState : MonoBehaviour
                 break;
             case TeamState.Neutral:
                 passProbability = 5;
-                velocidadIA = 30;
+                velocidadIA = 35;
 
                 centroZona = rival.zone.position;
                 tamanoZona = rival.zone.GetComponent<BoxCollider2D>().size;

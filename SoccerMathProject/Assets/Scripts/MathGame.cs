@@ -94,11 +94,7 @@ public class MathGame : MonoBehaviour
         }
         else
         {
-            result = false;
-            gameManager.ResumeGame();
-            team.currentPlayer[0].playerMovement.ActivateParalysis();
-            animator.SetTrigger("Close");
-            Invoke("DeactivateMiniGame", 2f);
+            CheckAnswer();
         }
 
         if (Input.GetKeyDown(KeyCode.Return))
@@ -107,39 +103,46 @@ public class MathGame : MonoBehaviour
         }
     }
 
-    public void CheckAnswer()
+    void CheckAnswer()
     {
         int playerAnswer;
         if (int.TryParse(playerInputField.text, out playerAnswer))
         {
-           gameManager.ResumeGame(); //se hace resume game antes para luego congelar jugador
-           if (playerAnswer == correctAnswer)
-           {
+            gameManager.ResumeGame(); //se hace resume game antes para luego congelar jugador
+            if (playerAnswer == correctAnswer)
+            {
                 result = true;
                 team.currentPlayer[0].currentRival.rivalStates.ActivateParalysis();
-                
             }
-           else
-           {
+            else
+            {
                 result = false;
                 team.currentPlayer[0].playerMovement.ActivateParalysis();
                 Ball.Instance.attachedPlayer = null;
                 Ball.Instance.isBallAttached = false;
                 Ball.Instance.attachedRival = team.currentPlayer[0].currentRival;
-           }
-            
-            
-            ResetMinigame();
-            animator.SetTrigger("Close");
-
-            //resetear barra
-            timeBar.gameObject.SetActive(false);
-            currentTime = 50f; //mas tiempo para que no se active otra vez
-            timeBar.anchoredPosition = startPos;
-
-            Invoke("CallAnswer", 0.5f);
-
+            }
         }
+        else
+        {
+            //si no hay respuesta
+            result = false;
+            gameManager.ResumeGame();
+            team.currentPlayer[0].playerMovement.ActivateParalysis();
+            Ball.Instance.attachedPlayer = null;
+            Ball.Instance.isBallAttached = false;
+            Ball.Instance.attachedRival = team.currentPlayer[0].currentRival;
+        }
+
+        ResetMinigame();
+        animator.SetTrigger("Close");
+
+        //resetear barra
+        timeBar.gameObject.SetActive(false);
+        currentTime = 50f; //más tiempo para que no se active otra vez
+        timeBar.anchoredPosition = startPos;
+
+        Invoke("CallAnswer", 0.5f);
     }
 
     public void CallAnswer()

@@ -314,10 +314,9 @@ public class ShootMinigame : MonoBehaviour
                     operationSprite.sprite = suma;
                 }
                 break;
-
         }
 
-        //genera respuestas incorrectas cercanas a la respuesta correcta
+        //generar respuestas incorrectas cercanas a la respuesta correcta
         int minIncorrect = correctAnswer - 3;
         int maxIncorrect = correctAnswer + 3;
         List<int> incorrectAnswers = new List<int>();
@@ -329,43 +328,50 @@ public class ShootMinigame : MonoBehaviour
             }
         }
 
-        //asigna las respuestas incorrectas a las opciones disponibles
-        List<Image> optionImages = new List<Image> { option1, option2, option3, option4 };
+        //asignar respuestas incorrectas a opciones disponibles
+        List<int> allOptions = new List<int> { correctAnswer };
 
-        //margen para cuando la opcion es negativa
-        int margen = 5;
-
-        for (int i = 0; i < 4; i++)
+        int margen = 5; //margen para cuando la opción es negativa
+        for (int i = 0; i < 3; i++)
         {
-            if (i < incorrectAnswers.Count)
+            if (incorrectAnswers.Count > 0)
             {
                 int randomIndex = Random.Range(0, incorrectAnswers.Count);
                 int incorrectAnswer = incorrectAnswers[randomIndex];
-                
-                if (incorrectAnswer < 0) //si una opcion es negativa, que salga el sprite de otro numero
+
+                if (incorrectAnswer < 0) //si una opción es negativa, que salga el sprite de otro número
                 {
-                    optionImages[i].sprite = GetSpriteForNumber(correctAnswer + margen++);
+                    allOptions.Add(correctAnswer + margen++);
                 }
                 else
                 {
-                    optionImages[i].sprite = GetSpriteForNumber(incorrectAnswer);
+                    allOptions.Add(incorrectAnswer);
                 }
+
                 incorrectAnswers.RemoveAt(randomIndex);
             }
-            /*else
-            {
-                // Si no hay suficientes respuestas incorrectas, deja la opción vacía
-                optionImages[i].sprite = null;
-            }*/
         }
-        //asignar la correcta a la opcion libre
-        foreach (Image optionImage in optionImages)
+
+        //mezclar las opciones
+        Shuffle(allOptions);
+
+        List<Image> optionImages = new List<Image> { option1, option2, option3, option4 };
+        for (int i = 0; i < optionImages.Count; i++)
         {
-            if (optionImage.sprite == null)
-            {
-                optionImage.sprite = GetSpriteForNumber(correctAnswer);
-                break;
-            }
+            optionImages[i].sprite = GetSpriteForNumber(allOptions[i]);
+        }
+    }
+
+    private void Shuffle<T>(List<T> list)
+    {
+        int n = list.Count;
+        while (n > 1)
+        {
+            n--;
+            int k = Random.Range(0, n + 1);
+            T value = list[k];
+            list[k] = list[n];
+            list[n] = value;
         }
     }
 

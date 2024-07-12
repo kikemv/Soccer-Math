@@ -559,8 +559,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: use the key c to switch the camera focus between tha ball, the player or
-    the cursor
+  m_text: use the key c to switch the camera focus between tha ball and the player
+    selected
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: dc36b3fdc14f47ebb36fd484a67e268a, type: 2}
   m_sharedMaterial: {fileID: 2140032, guid: dc36b3fdc14f47ebb36fd484a67e268a, type: 2}
@@ -5008,7 +5008,7 @@ VideoPlayer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1496769294}
   m_Enabled: 1
-  m_VideoClip: {fileID: 32900000, guid: 7da5e9aede59be74d82a1d312e5fbb2a, type: 3}
+  m_VideoClip: {fileID: 32900000, guid: 39b04e6687c9f8442955222f7f3e9cce, type: 3}
   m_TargetCameraAlpha: 1
   m_TargetCamera3DLayout: 0
   m_TargetCamera: {fileID: 0}
@@ -6164,7 +6164,7 @@ VideoPlayer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2000258946}
   m_Enabled: 1
-  m_VideoClip: {fileID: 32900000, guid: 60aee2c7ef063ae4682c90ab662faa23, type: 3}
+  m_VideoClip: {fileID: 32900000, guid: 750e2f441a819bf49bbb1e2a52e8c2ec, type: 3}
   m_TargetCameraAlpha: 1
   m_TargetCamera3DLayout: 0
   m_TargetCamera: {fileID: 0}
