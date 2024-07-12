@@ -39,6 +39,8 @@ public class GameManager : MonoBehaviour
     public Animator decisionAnimator;
     public Animator versusAnimator;
 
+    public Animator transition;
+
     //versus
     public GameObject versus;
     public Image num1;
@@ -54,7 +56,7 @@ public class GameManager : MonoBehaviour
     public GameObject pausePanel;
     public GameObject pauseSettingsPanel;
 
-    public bool serveTeam = true;   //para ver quien saca
+    public bool serveTeam = true;
     public Transform center;
 
     public GameSettings gameSettings;
@@ -75,8 +77,6 @@ public class GameManager : MonoBehaviour
         gameSettings = GameSettings.Instance;
         
         center = GameObject.FindGameObjectWithTag("Field").transform;
-        team = FindObjectOfType<Team>();
-        teamRival = FindObjectOfType<TeamRival>();
 
         points = 0;
         operationsSolved = 0;
@@ -84,7 +84,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        CenterKickLocal();
+        InitialCenterKickLocal();
     }
 
     private void Update()
@@ -160,7 +160,6 @@ public class GameManager : MonoBehaviour
     {
         if (!shootGameActive)
         {
-            Debug.Log("empezando el shootgame");
             PauseGame();
             shootGame.gameObject.SetActive(true);
             shootGame.animator.SetTrigger("open");
@@ -196,14 +195,51 @@ public class GameManager : MonoBehaviour
             rival.hasPossession = false;
         }
 
-        // Colocar al jugador que esté siendo manejado en el centro del campo junto al balón
+        //colocar al jugador que esté siendo manejado en el centro del campo junto al balón
         jugadorActual.transform.position = center.position;
         jugadorActual.UserBrain();
         team.currentPlayer[1].AiBrain();
         jugadorActual.playerMovement.isPaused = true;
         jugadorActual.GainPossession();
 
-        // Congelar el movimiento del jugador que esté siendo manejado
+        //congelar el movimiento del jugador que esté siendo manejado
+        jugadorActual.playerMovement.StopMovement();
+
+        //desparalizar si hay alguien paralizado
+        foreach (Rival rival in teamRival.teamRivals)
+        {
+            if (rival.rivalStates.isParalyzed) rival.rivalStates.Deparalyze();
+        }
+
+        Invoke("RefereeSound", 1f);
+    }
+
+    public void InitialCenterKickLocal()
+    {
+        PauseGame();
+
+        Player jugadorActual = null;
+
+        foreach (Player player in team.teamPlayers)
+        {
+            player.ResetPosition();
+            if (player.sacador) jugadorActual = player;
+        }
+
+        foreach (Rival rival in teamRival.teamRivals)
+        {
+            rival.rivalStates.state = RivalStates.Idle;
+            rival.ResetPosition();
+            rival.hasPossession = false;
+        }
+
+        //colocar al jugador que esté siendo manejado en el centro del campo junto al balón
+        jugadorActual.transform.position = center.position;
+        jugadorActual.UserBrain();
+        jugadorActual.playerMovement.isPaused = true;
+        jugadorActual.GainPossession();
+
+        //congelar el movimiento del jugador que esté siendo manejado
         jugadorActual.playerMovement.StopMovement();
 
         Invoke("RefereeSound", 1f);
@@ -227,8 +263,7 @@ public class GameManager : MonoBehaviour
             if (rival.sacador) jugadorActual = rival;
         }
 
-        // Colocar al jugador que esté siendo manejado en el centro del campo junto al balón y darle la posesion
-        Debug.Log(jugadorActual);
+        //colocar al jugador que esté siendo manejado en el centro del campo junto al balón y darle la posesion
         jugadorActual.transform.position = center.position;
         jugadorActual.GainPossession();
         jugadorActual.rivalStates.state = RivalStates.ThrowIn;
@@ -254,7 +289,6 @@ public class GameManager : MonoBehaviour
         foreach (Rival rival in teamRival.teamRivals)
         {
             rival.rivalStates.state = RivalStates.Idle;
-
         }
         gamePaused = true;
     }
@@ -327,7 +361,7 @@ public class GameManager : MonoBehaviour
     public void RestartMatch()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        CenterKickLocal();
+        InitialCenterKickLocal();
     }
 
     public void OpenPauseSettings()
@@ -337,6 +371,15 @@ public class GameManager : MonoBehaviour
 
     public void BackToMainMenu()
     {
+        Time.timeScale = 1f;
+        transition.SetTrigger("Start");
+        StartCoroutine(LoadTransition());
+    }
+
+    IEnumerator LoadTransition()
+    {
+
+        yield return new WaitForSeconds(1f);
         SceneManager.LoadScene("MainMenu");
     }
 

@@ -32,7 +32,7 @@ public class RivalState : MonoBehaviour
 
     public Goalkeeper goalkeeper;
 
-    //Calculo de la zona por la que se puede mover el jugador
+    //zona por la que se puede move
     private Vector3 centroZona;
     private Vector2 tamanoZona;
     private Vector3 limiteSuperior;
@@ -46,7 +46,7 @@ public class RivalState : MonoBehaviour
     public int currentPatrolPointIndex;
     public Vector3 currentPatrolTarget;
 
-    //Para seguir la posicion de la pelota
+    //para seguir la posicion de la pelota
     public float distanciaX;
     private Transform ballWithDistance;
     public float velocidadIA;
@@ -59,8 +59,9 @@ public class RivalState : MonoBehaviour
     private int passProbability;
     private int randomNum;
     private bool decisionTaken = false;
+    private Vector3 directionToOpponent;
+    private Vector3 passDirection;
 
-    //porteria provisional
     public Transform porteria;
 
     //stun
@@ -89,7 +90,7 @@ public class RivalState : MonoBehaviour
     private void Start()
     {
         teamState = TeamState.Neutral;
-        state = RivalStates.Defending;
+        state = RivalStates.Idle;
 
         patrolSpeed = Random.Range(3f, 6f);
         GeneratePatrolPoints();
@@ -97,12 +98,10 @@ public class RivalState : MonoBehaviour
 
     void Update()
     {
-        // Actualizar el comportamiento en función del estado del equipo
+        //actualizar el comportamiento en función del estado del equipo
         switch (teamState)
         {
             case TeamState.Offensive:
-                Debug.Log("ofensivo");
-
                 passProbability = 8;
                 velocidadIA = 40;
 
@@ -121,8 +120,6 @@ public class RivalState : MonoBehaviour
                 }
                 break;
             case TeamState.Neutral:
-                Debug.Log("neutral");
-
                 passProbability = 5;
                 velocidadIA = 30;
 
@@ -145,8 +142,6 @@ public class RivalState : MonoBehaviour
                 }
                 break;
             case TeamState.Defensive:
-                Debug.Log("defensivo");
-
                 passProbability = 3;
                 velocidadIA = 30;
 
@@ -178,11 +173,9 @@ public class RivalState : MonoBehaviour
 
                 break;
             case RivalStates.ThrowIn:
-                Debug.Log("estado thowin");
-
                 animator.SetTrigger("Idle");
 
-                if (!isPassing)    // Para evitar múltiples llamadas al método de pase
+                if (!isPassing)    //para evitar múltiples llamadas al pase
                 {
                     Invoke("PassAfterDelay", 2f);
                     isPassing = true;
@@ -213,8 +206,8 @@ public class RivalState : MonoBehaviour
 
                 break;
             case RivalStates.Defending:
-                // En el estado de defensa, solo el rival más cercano al balón va tras él
-                // Los demás rivales van a sus posiciones de defensa
+                //solo presiona el jugador mas cercano al balon
+                //los demás se quedan en sus posiciones de defensa
                 List<Rival> nearestRivals = FindNearestRivalsToBall(1);
                 if (rival == nearestRivals[0])
                 {
@@ -285,11 +278,9 @@ public class RivalState : MonoBehaviour
 
                 break;
             case RivalStates.ThrowIn:
-                Debug.Log("estado thowin");
-
                 animator.SetTrigger("Idle");
 
-                if (!isPassing)    // Para evitar múltiples llamadas al método de pase
+                if (!isPassing)
                 {
                     Invoke("PassAfterDelay", 1f);   //saca mas rapido al ir perdiendo
                     isPassing = true;
@@ -395,7 +386,7 @@ public class RivalState : MonoBehaviour
             case RivalStates.ThrowIn:
                 animator.SetTrigger("Idle");
 
-                if (!isPassing)    // Para evitar múltiples llamadas al método de pase
+                if (!isPassing)
                 {
                     Invoke("PassAfterDelay", 3f);   //como va ganando tarda mas en sacar
                     isPassing = true;
@@ -428,8 +419,7 @@ public class RivalState : MonoBehaviour
 
                 break;
             case RivalStates.Defending:
-                // En el estado de defensa, solo el rival más cercano al balón va tras él
-                // Los demás rivales van a sus posiciones de defensa
+                //presiona un jugador
                 List<Rival> nearestRivals = FindNearestRivalsToBall(1);
                 if (rival == nearestRivals[0])
                 {
@@ -496,13 +486,12 @@ public class RivalState : MonoBehaviour
         Vector3 direccion = (Objective.position - transform.position).normalized;
         movimiento = direccion * velocidadIA * Time.deltaTime;
 
-        // Verifica la posición del jugador en relación con los límites de la zona
         bool estaEnElLimiteDerecho = transform.position.x >= limiteSuperior.x;
         bool estaEnElLimiteIzquierdo = transform.position.x <= limiteInferior.x;
         bool estaEnElLimiteSuperior = transform.position.y >= limiteSuperior.y;
         bool estaEnElLimiteInferior = transform.position.y <= limiteInferior.y;
 
-        // Detiene el movimiento en el eje correspodiente si está en el límite
+        //detiene el movimiento en el eje correspodiente si está en el límite
         if (!rival.hasPossession)
         {
             if (estaEnElLimiteDerecho && Ball.Instance.transform.position.x > transform.position.x 
@@ -531,10 +520,10 @@ public class RivalState : MonoBehaviour
     {
         if (teamState == TeamState.Neutral)
         {
-            // Verificar si hemos llegado al punto actual
+            //verificar si hemos llegado al punto actual
             if (Vector3.Distance(transform.position, currentPatrolTarget) < 0.5f)
             {
-                // Seleccionar un nuevo punto de patrulla al azar
+                //seleccionar un nuevo punto de patrulla al azar
                 currentPatrolPointIndex = Random.Range(0, patrolPointsNeutral.Length);
                 currentPatrolTarget = patrolPointsNeutral[currentPatrolPointIndex];
             }
@@ -631,15 +620,15 @@ public class RivalState : MonoBehaviour
 
         float angulo = Mathf.Atan2(movement.y, movement.x) * Mathf.Rad2Deg;
 
-        // Ajustar el ángulo para asegurarse de que esté dentro del rango de 0 a 360 grados
+        //ajustar el ángulo
         if (angulo < 0f)
         {
             angulo += 360f;
         }
 
+        //activar los triggers correspondientes según el ángulo
         if (movement.magnitude > 0f)
         {
-            // Determinar qué trigger activar según el ángulo
             if (angulo >= 45f && angulo < 135f)
             {
                 animator.SetTrigger("MoveUp");
@@ -659,9 +648,10 @@ public class RivalState : MonoBehaviour
         }
         else
         {
-            // Si no hay movimiento, desactivar la animación de movimiento
+            //si no hay movimiento, desactivar la animación de movimiento
             animator.SetTrigger("Idle");
         }
+        spriteRenderer.color = Color.white;
     }
 
     private void PassAfterDelay()
@@ -685,8 +675,6 @@ public class RivalState : MonoBehaviour
         Ball.Instance.transform.SetParent(null);
         Ball.Instance.rb.AddForce(direction * passForce, ForceMode2D.Impulse);
         rival.hasPossession = false;
-
-        Debug.Log(rival + " le esta esta pasando el balon a " + receiver);
     }
 
     public Rival FindNearestTeammate()
@@ -720,7 +708,6 @@ public class RivalState : MonoBehaviour
     {
         isParalyzed = true;
 
-        // Reducir la opacidad del sprite para simular desactivación
         spriteRenderer.color = new Color(1f, 1f, 1f, 0.5f); // 50% de opacidad
 
         col.enabled = false;
@@ -748,7 +735,7 @@ public class RivalState : MonoBehaviour
         isParalyzed = false;
         spriteRenderer.color = Color.white;
         col.enabled = true;
-        paralysisDuration = 15f; // Restablecer la duración para futuras parálisis
+        paralysisDuration = 15f;
         state = RivalStates.Defending;
     }
 
@@ -756,11 +743,10 @@ public class RivalState : MonoBehaviour
     {
         List<Rival> nearestRivals = new List<Rival>();
 
-        // Crear una lista de distancias y rivales correspondientes
         List<float> distances = new List<float>();
         List<Rival> rivals = new List<Rival>();
 
-        // Calcular las distancias de todos los rivales a la pelota
+        //calcular las distancias de todos los rivales a la pelota
         foreach (Rival rival in teamrival.teamRivals)
         {
             float distance = Vector3.Distance(rival.transform.position, 
@@ -769,19 +755,17 @@ public class RivalState : MonoBehaviour
             rivals.Add(rival);
         }
 
-        // Ordenar las distancias y los rivales correspondientes
+        //ordenar las distancias y los rivales correspondientes
         for (int i = 0; i < distances.Count; i++)
         {
             for (int j = i + 1; j < distances.Count; j++)
             {
                 if (distances[i] > distances[j])
                 {
-                    // Intercambiar distancias
                     float tempDistance = distances[i];
                     distances[i] = distances[j];
                     distances[j] = tempDistance;
 
-                    // Intercambiar rivales
                     Rival tempRival = rivals[i];
                     rivals[i] = rivals[j];
                     rivals[j] = tempRival;
@@ -797,17 +781,52 @@ public class RivalState : MonoBehaviour
         return nearestRivals;
     }
 
+    public Rival FindNearestTeammateInDirection(Vector3 direction)
+    {
+        Rival nearestTeammate = null;
+        float shortestDistance = Mathf.Infinity;
+
+        foreach (Rival teammate in teamrival.teamRivals)
+        {
+            if (teammate != GetComponent<Rival>())
+            {
+                Vector3 toTeammate = teammate.transform.position - transform.position;
+                if (Vector3.Dot(toTeammate.normalized, direction) > 0)
+                {
+                    float distanceToTeammate = Vector3.Distance(transform.position, teammate.transform.position);
+                    if (distanceToTeammate < shortestDistance)
+                    {
+                        shortestDistance = distanceToTeammate;
+                        nearestTeammate = teammate;
+                    }
+                }
+            }
+        }
+        return nearestTeammate;
+    }
+
+
     private void TakeDecision()
     {
         Time.timeScale = 1f;
-        if (randomNum <= passProbability)
-        {
-            Passing(140f, FindNearestTeammate());
-        }
-        else
+        
+        //si no hay pase posible, se regatea
+        if (FindNearestTeammateInDirection(passDirection) == null)
         {
             GameManager.Instance.StartMathRival();
         }
+        else
+        {
+            if (randomNum <= passProbability)
+            {
+                Passing(140f, FindNearestTeammateInDirection(passDirection));
+            }
+            else
+            {
+                GameManager.Instance.StartMathRival();
+            }
+        }
+       
         GameManager.Instance.decisionPanelRival.SetActive(false);
         GameManager.Instance.decisionActive = false;
         decisionTaken = false;
@@ -821,30 +840,26 @@ public class RivalState : MonoBehaviour
                 !collision.gameObject.GetComponent<Player>().playerMovement.isParalyzed
                 && !GameManager.Instance.miniGameActive)
             {
-                Debug.Log("colisionando con jugador");
                 Player currentPlayer = collision.gameObject.GetComponent<Player>();
                 GameManager.Instance.n1 = currentPlayer.number;
                 GameManager.Instance.n2 = rival.number;
                 GameManager.Instance.ShowDecisionRival();
+                
+                //detectar lado oponente
+                directionToOpponent = collision.transform.position - transform.position;
+                passDirection = Vector3.zero;
+
+                if (Mathf.Abs(directionToOpponent.x) > Mathf.Abs(directionToOpponent.y))
+                { 
+                    //oponente está a la derecha o izquierda
+                    passDirection = directionToOpponent.x > 0 ? Vector3.left : Vector3.right;
+                }
+                else
+                { 
+                    //oponente está arriba o abajo
+                    passDirection = directionToOpponent.y > 0 ? Vector3.down : Vector3.up;
+                }
             }
         }
     }
-
-    private void OnTriggerStay2D(Collider2D collision)
-    {
-        if (state == RivalStates.WithBall)
-        {
-            if (collision.CompareTag("Jugador") && !GameManager.Instance.decisionActive && 
-                !collision.gameObject.GetComponent<Player>().playerMovement.isParalyzed
-                && !GameManager.Instance.miniGameActive)
-            {
-                Player currentPlayer = collision.gameObject.GetComponent<Player>();
-                GameManager.Instance.n1 = currentPlayer.number;
-                GameManager.Instance.n2 = rival.number;
-                GameManager.Instance.ShowDecisionRival();
-            }
-        }
-    }
-
-
 }

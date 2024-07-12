@@ -17,9 +17,14 @@ public class PauseSettings : MonoBehaviour
     public Toggle camToggle;
     public TextMeshProUGUI camText;
 
+    //controls
+    public Button controlsButton;
+    public Button closeControlsButton;
+    public GameObject controlsPanel;
+
     void Start()
     {
-        // Inicializar UI con valores actuales de GameSettings
+        //inicializar con valores de GameSettings
         soundVolumeSlider.value = GameSettings.Instance.GetSoundVolume() * 100;
         musicVolumeSlider.value = GameSettings.Instance.GetMusicVolume() * 100;
 
@@ -27,6 +32,8 @@ public class PauseSettings : MonoBehaviour
         musicText.text = (GameSettings.Instance.GetMusicVolume() * 100).ToString();
 
         exitButton.onClick.AddListener(() => gameObject.SetActive(false));
+        controlsButton.onClick.AddListener(() => controlsPanel.SetActive(true));
+        closeControlsButton.onClick.AddListener(() => controlsPanel.SetActive(false));
 
         soundVolumeSlider.onValueChanged.AddListener(value =>
         {

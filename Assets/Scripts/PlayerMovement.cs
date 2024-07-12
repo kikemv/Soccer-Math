@@ -25,15 +25,14 @@ public class PlayerMovement : MonoBehaviour
     private Animator animator;
 
     //barra estamina
-    public Slider barraEstamina; // Referencia a la barra de estamina en la interfaz de usuario
+    public Slider barraEstamina;
+    public float estaminaMaxima;
+    public float consumoEstamina;
+    public float recargaEstamina;
+    public float velocidadReduccionEstamina;
 
-    public float estaminaMaxima; // Estamina máxima del jugador
-    public float consumoEstamina; // Consumo de estamina por segundo
-    public float recargaEstamina; // Recarga de estamina por segundo
-    public float velocidadReduccionEstamina; // Velocidad de reducción cuando la estamina se agota
-
-    private float estaminaActual; // Estamina actual del jugador
-    private bool corriendo = false; // Indica si el jugador está corriendo
+    private float estaminaActual;
+    private bool corriendo = false;
     private bool cansado = false;
 
     private void Awake()
@@ -56,22 +55,20 @@ public class PlayerMovement : MonoBehaviour
             {
                 animator.SetTrigger("Paralyzed");
                 player.playerState.state = States.Paralyzed;
-                // Reducir la opacidad del sprite para simular desactivación
                 spriteRenderer.color = new Color(1f, 1f, 1f, 0.5f); // 50% de opacidad
 
-                // Detener el movimiento y la interacción del jugador
+                //detener el movimiento y la interacción del jugador
                 StopMovement();
                 col.enabled = false;
 
-                // Contador para la duración de la parálisis
                 paralysisDuration -= Time.deltaTime;
                 if (paralysisDuration <= 0f)
                 {
-                    // Volver a la normalidad después de la duración especificada
+                    //volver a la normalidad
                     isParalyzed = false;
                     spriteRenderer.color = Color.white;
                     col.enabled = true;
-                    paralysisDuration = 15f; // Restablecer la duración para futuras parálisis
+                    paralysisDuration = 15f;
                     animator.SetTrigger("Idle");
                 }
             }
@@ -89,25 +86,21 @@ public class PlayerMovement : MonoBehaviour
 
     private void UpdateMovement()
     {
-
-        // Verificar si se está pulsando la tecla SHIFT
         bool isShiftPressed = Input.GetKey(KeyCode.LeftShift);
 
         if (isShiftPressed) corriendo = true;
         else corriendo = false;
 
-        // Establecer la velocidad actual según si se está presionando SHIFT o no
+        //establecer la velocidad según si se está presionando SHIFT o no
         velocidadActual = isShiftPressed ? velocidadAumentada : velocidadNormal;
 
-        // Cambiar la velocidad de reproducción de la animación
+        //cambiar la velocidad de reproducción de la animación
         animator.speed = isShiftPressed ? 1.5f : 1.0f;
 
         movement = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
-
-        // Normalizar el vector de movimiento para asegurarse de que la velocidad diagonal no sea mayor
         movement.Normalize();
 
-        // Si la estamina se ha agotado, reduce la velocidad del jugador
+        //si la estamina se ha agotado, reduce la velocidad del jugador
         if (estaminaActual <= 0f)
         {
             cansado = true;
@@ -119,18 +112,15 @@ public class PlayerMovement : MonoBehaviour
             if (barraEstamina.value == 1f) cansado = false;
         }
 
-        // Actualizar la velocidad del Rigidbody
         rb.velocity = movement * velocidadActual * Time.deltaTime;
     }
 
     private void UpdateEstamina()
     {
-        // Si el jugador está corriendo, consume estamina
         if (corriendo)
         {
             estaminaActual -= consumoEstamina * Time.deltaTime;
 
-            // Si la estamina se agota, reduce la velocidad del jugador
             if (estaminaActual <= 0f)
             {
                 velocidadActual = velocidadNormal * velocidadReduccionEstamina;
@@ -140,20 +130,16 @@ public class PlayerMovement : MonoBehaviour
                 velocidadActual = velocidadAumentada;
             }
 
-            // Actualiza la barra de estamina en la interfaz de usuario
             barraEstamina.value = estaminaActual / estaminaMaxima;
         }
-        else // Si el jugador no está corriendo, recarga estamina
+        else
         {
             estaminaActual += recargaEstamina * Time.deltaTime;
 
-            // Limita la estamina al máximo
             estaminaActual = Mathf.Clamp(estaminaActual, 0f, estaminaMaxima);
 
-            // Restaura la velocidad normal
             velocidadActual = velocidadNormal;
 
-            // Actualiza la barra de estamina en la interfaz de usuario
             barraEstamina.value = estaminaActual / estaminaMaxima;
         }
     }
@@ -171,19 +157,17 @@ public class PlayerMovement : MonoBehaviour
 
     private void UpdateAnimatorParameters()
     {
-        // Obtener el ángulo del movimiento en radianes
         float angulo = Mathf.Atan2(movement.y, movement.x) * Mathf.Rad2Deg;
 
-        // Ajustar el ángulo para asegurarse de que esté dentro del rango de 0 a 360 grados
+        //ajustar angulo
         if (angulo < 0f)
         {
             angulo += 360f;
         }
 
-        // Activar los triggers correspondientes según el ángulo de movimiento
+        //activar los triggers correspondientes según el ángulo
         if (movement.magnitude > 0f)
         {
-            // Determinar qué trigger activar según el ángulo
             if (angulo >= 45f && angulo < 135f)
             {
                 animator.SetTrigger("MoveUp");
@@ -203,7 +187,7 @@ public class PlayerMovement : MonoBehaviour
         }
         else
         {
-            // Si no hay movimiento, desactivar la animación de movimiento
+            //si no hay movimiento, desactivar la animación de movimiento
             animator.SetTrigger("Idle");
         }
     }

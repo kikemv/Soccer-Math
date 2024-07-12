@@ -76,32 +76,30 @@ public class Player : MonoBehaviour
         ballPosition = transform.Find("BallPossition");
         teamRival = FindObjectOfType<TeamRival>(); ;
 
-        shootingChargeRate = 0.5f;
-    }
+        shootingChargeRate = 0.2f;
 
-    private void Start()
-    {
         if (sacador) offset += 150;
 
         if (playerRole == PlayerRole.Forward)
         {
-            startPosition = new Vector3(zone.position.x, 
-                                        zone.position.y - offset, 
+            startPosition = new Vector3(zone.position.x,
+                                        zone.position.y - offset,
                                         zone.position.z);
         }
         else if (playerRole == PlayerRole.Mid)
         {
-            startPosition = new Vector3(zone.position.x, 
-                                        zone.position.y - offset / 2, 
+            startPosition = new Vector3(zone.position.x,
+                                        zone.position.y - offset / 2,
                                         zone.position.z);
         }
-        else startPosition = new Vector3(zone.position.x, 
-                                         zone.position.y - offset / 6, 
+        else startPosition = new Vector3(zone.position.x,
+                                         zone.position.y - offset / 6,
                                          zone.position.z);
+    }
 
+    private void Start()
+    {
         playerMovement.barraEstamina.gameObject.SetActive(false);
-
-        // Desactivar la Slider al principio
         shootingSlider.gameObject.SetActive(false);
     }
 
@@ -113,7 +111,7 @@ public class Player : MonoBehaviour
         {
             PosiblesPases();
 
-            // Actualizar Slider si el jugador está en la zona de disparo y tiene posesión
+            //actualizar shootbar si el jugador está en la zona de disparo y tiene posesión
             if (transform.position.y > shootRange && hasPossession)
             {
                 shootingSlider.gameObject.SetActive(true);
@@ -125,7 +123,7 @@ public class Player : MonoBehaviour
                 }
                 else
                 {
-                    // Carga completa, cambiar sprite del indicador y permitir el disparo
+                    //carga completa, cambiar sprite del indicador
                     spriteIndicador.sprite = ind2;
                     shootingSlider.value = 1;
                     // tiro
@@ -153,8 +151,8 @@ public class Player : MonoBehaviour
     public void resetShoot()
     {
         spriteIndicador.sprite = ind1;
-        shootingCharge = 0.0f; // Reiniciar la carga del disparo
-        shootingSlider.value = 0.0f; // Reiniciar la posición de la Slider
+        shootingCharge = 0.0f;
+        shootingSlider.value = 0.0f;
         shootingSlider.gameObject.SetActive(false);
     }
 
@@ -189,7 +187,7 @@ public class Player : MonoBehaviour
         user = false;
         indicador.SetActive(false);
         hasPossession = false;
-        playerMovement.StopMovement();      //para que no se mueva en la direccion al pasarla
+        playerMovement.StopMovement();   //para que no se mueva en la direccion al pasarla
         playerMovement.barraEstamina.gameObject.SetActive(false);
     }
 
@@ -261,7 +259,7 @@ public class Player : MonoBehaviour
             }
             if (collision.CompareTag("Ball"))
             {
-                // Si la pelota no está pegada y se colisiona con ella, la pega al jugador
+                //si la pelota no está pegada y se colisiona con ella, se pega al jugador
                 if (!Ball.Instance.isBallAttached)
                 {
                     Ball.Instance.isBallAttached = true;

@@ -35,8 +35,8 @@ public class MenuManager : MonoBehaviour
 
     void Start()
     {
-        playButton.onClick.AddListener(() => LoadScene(1));     //cambiar luego a escena partido
-        settingsButton.onClick.AddListener(() => LoadScene(1));
+        playButton.onClick.AddListener(() => LoadScene("SettingsScene"));
+        settingsButton.onClick.AddListener(() => LoadScene("SettingsScene"));
         exitButton.onClick.AddListener(() => CloseGame());
         setPressedButtons();
 
@@ -86,18 +86,20 @@ public class MenuManager : MonoBehaviour
         }
     }
 
-    void LoadScene(int levelIndex)
+    void LoadScene(string sceneName)
     {
         transition.SetTrigger("Start");
         SoundController.Instance.PlaySound(menuClick, GameSettings.Instance.soundVolume);
-        StartCoroutine(LoadTransition(levelIndex));
+        StartCoroutine(LoadTransition(sceneName));
     }
 
-    IEnumerator LoadTransition(int levelIndex)
+    IEnumerator LoadTransition(string sceneName)
     {
         
         yield return new WaitForSeconds(1f);
-        SceneManager.LoadScene(levelIndex);
+        SceneManager.LoadScene(sceneName);
+
+        Debug.Log("LoadTransition completed, levelIndex: " + sceneName);
     }
 
     void playButtonPressed()

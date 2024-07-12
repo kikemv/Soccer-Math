@@ -12,7 +12,7 @@ public class CameraManager : MonoBehaviour
 
     public Camera mainCamera;
 
-    private enum CameraMode { Ball, Player, Cursor };
+    private enum CameraMode { Ball, Player};
     private CameraMode currentMode = CameraMode.Ball;
 
     private void Start()
@@ -34,10 +34,6 @@ public class CameraManager : MonoBehaviour
                 FocusOnPlayer();
                 camText.text = "CAM: PLAYER";
                 break;
-            case CameraMode.Cursor:
-                FocusOnCursor();
-                camText.text = "CAM: CURSOR";
-                break;
         }
 
         if (Input.GetKeyDown(KeyCode.C))
@@ -53,18 +49,18 @@ public class CameraManager : MonoBehaviour
 
     private void SwitchCameraMode()
     {
-        currentMode = (CameraMode)(((int)currentMode + 1) % 3);
+        currentMode = (CameraMode)(((int)currentMode + 1) % 2);
     }
 
     private void ToggleCameraSize()
     {
-        if (mainCamera.orthographicSize == 135f)
+        if (mainCamera.orthographicSize == 210f)
         {
-            mainCamera.orthographicSize = 200f;
+            mainCamera.orthographicSize = 310f;
         }
         else
         {
-            mainCamera.orthographicSize = 135f;
+            mainCamera.orthographicSize = 210f;
         }
     }
 
@@ -96,7 +92,7 @@ public class CameraManager : MonoBehaviour
         transform.position = Vector3.Lerp(transform.position, playerPostion, smoothSpeed * Time.deltaTime);
     }
 
-    private void FocusOnCursor()
+    /*private void FocusOnCursor()
     {
         // Obtenemos la posición del cursor en el mundo
         Vector3 cursorPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -105,5 +101,5 @@ public class CameraManager : MonoBehaviour
         // Interpolamos la posición de la cámara hacia la posición del cursor
         Vector3 smoothedPosition = Vector3.Lerp(transform.position, cursorPosition, smoothSpeed * Time.deltaTime);
         transform.position = smoothedPosition;
-    }
+    }*/
 }

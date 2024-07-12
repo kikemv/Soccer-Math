@@ -23,7 +23,7 @@ public class PlayerState : MonoBehaviour
 
     public TextMeshProUGUI formationText;
 
-    //Calculo de la zona por la que se puede mover el jugador
+    //calculo de la zona por la que se puede mover el jugador
     private Transform zone;
     private Vector3 centroZona;
     private Vector2 tamanoZona;
@@ -38,7 +38,7 @@ public class PlayerState : MonoBehaviour
     public int currentPatrolPointIndex;
     public Vector3 currentPatrolTarget;
 
-    //Para seguir la posicion de la pelota
+    //para seguir la posicion de la pelota
     public float distanciaX;
     private Transform ballWithDistance;
 
@@ -67,7 +67,7 @@ public class PlayerState : MonoBehaviour
         limiteSuperior = new Vector3(centroZona.x + tamanoZona.x / 2, centroZona.y + tamanoZona.y / 2, 0f);
         limiteInferior = new Vector3(centroZona.x - tamanoZona.x / 2, centroZona.y - tamanoZona.y / 2, 0f);
 
-        state = States.Defending;
+        state = States.Idle;
         patrolSpeed = Random.Range(3f, 6f);
         GeneratePatrolPoints();
     }
@@ -76,7 +76,6 @@ public class PlayerState : MonoBehaviour
     {
         SetFormation();
 
-        // Actualizar el comportamiento en función del estado actual
         switch (state)
         {
             case States.Idle:
@@ -89,7 +88,6 @@ public class PlayerState : MonoBehaviour
                     state = States.Defending;
                 break;
             case States.Defending:
-                // Lógica para el estado de defender
                 if (!player.user)
                 {
                     PatrolZone();
@@ -99,7 +97,6 @@ public class PlayerState : MonoBehaviour
                     state = States.Attacking;
                 break;
             case States.Attacking:
-                // Lógica para el estado de atacar (Attacking)
                 if (!player.user)
                 {
                     //si la pelota esta en la misma linea de ataque, se sigue la posicion de la pelota pero con cierta distancia
@@ -181,13 +178,12 @@ public class PlayerState : MonoBehaviour
         Vector3 direccion = (Objective.position - transform.position).normalized;
         Vector3 movimiento = direccion * velocidadIA * Time.deltaTime;
 
-        // Verifica la posición del jugador en relación con los límites de la zona
         bool estaEnElLimiteDerecho = transform.position.x >= limiteSuperior.x;
         bool estaEnElLimiteIzquierdo = transform.position.x <= limiteInferior.x;
         bool estaEnElLimiteSuperior = transform.position.y >= limiteSuperior.y;
         bool estaEnElLimiteInferior = transform.position.y <= limiteInferior.y;
 
-        // Detiene el movimiento en el eje correspodiente si está en el límite
+        //detiene el movimiento en el eje correspodiente si está en el límite
         if (estaEnElLimiteDerecho && Ball.Instance.transform.position.x > transform.position.x && Objective.position.x > transform.position.x)
             movimiento.x = 0f;
 
@@ -209,36 +205,32 @@ public class PlayerState : MonoBehaviour
     {
         if (teamState == "neutral")
         {
-            // Verificar si hemos llegado al punto actual
+            //verificar si hemos llegado al punto actual
             if (Vector3.Distance(transform.position, currentPatrolTarget) < 0.5f)
             {
-                // Seleccionar un nuevo punto de patrulla al azar
+                //seleccionar un nuevo punto de patrulla al azar
                 currentPatrolPointIndex = Random.Range(0, patrolPointsNeutral.Length);
                 currentPatrolTarget = patrolPointsNeutral[currentPatrolPointIndex];
             }
         }
         else if (teamState == "offensive")
         {
-            // Verificar si hemos llegado al punto actual
             if (Vector3.Distance(transform.position, currentPatrolTarget) < 0.5f)
             {
-                // Seleccionar un nuevo punto de patrulla al azar
                 currentPatrolPointIndex = Random.Range(0, patrolPointsOffensive.Length);
                 currentPatrolTarget = patrolPointsOffensive[currentPatrolPointIndex];
             }
         }
         else
         {
-            // Verificar si hemos llegado al punto actual
             if (Vector3.Distance(transform.position, currentPatrolTarget) < 0.5f)
             {
-                // Seleccionar un nuevo punto de patrulla al azar
                 currentPatrolPointIndex = Random.Range(0, patrolPointsDefensive.Length);
                 currentPatrolTarget = patrolPointsDefensive[currentPatrolPointIndex];
             }
         }
 
-        // Crear un objeto temporal para usar MoveTo(Transform)
+        //crear un objeto temporal para usar MoveTo(Transform)
         GameObject tempTarget = new GameObject("TempPatrolTarget");
         tempTarget.transform.position = currentPatrolTarget;
         MoveTo(tempTarget.transform);
@@ -297,24 +289,19 @@ public class PlayerState : MonoBehaviour
 
     private void UpdateAnimatorParameters(Vector3 movement)
     {
-
-        // Normalizar el vector de movimiento para asegurarse de que la velocidad diagonal no sea mayor
         movement.Normalize();
 
-        // Obtener el ángulo del movimiento en radianes
         float angulo = Mathf.Atan2(movement.y, movement.x) * Mathf.Rad2Deg;
 
-        // Ajustar el ángulo para asegurarse de que esté dentro del rango de 0 a 360 grados
+        //ajustar el ángulo
         if (angulo < 0f)
         {
             angulo += 360f;
         }
 
-        // Activar los triggers correspondientes según el ángulo de movimiento
+        //activar los triggers correspondientes según el ángulo
         if (movement.magnitude > 0f)
         {
-
-            // Determinar qué trigger activar según el ángulo
             if (angulo >= 45f && angulo < 135f)
             {
                 animator.SetTrigger("MoveUp");
@@ -331,11 +318,15 @@ public class PlayerState : MonoBehaviour
             {
                 animator.SetTrigger("MoveRight");
             }
-            audioSource.volume = 0.015f;
+            
+            //sonidos pasos
+            if(GameSettings.Instance.soundVolume != 0 || !GameManager.Instance.pauseOpened)
+                audioSource.volume = 0.015f;
+            else audioSource.volume = 0f;
         }
         else
         {
-            // Si no hay movimiento, desactivar la animación de movimiento
+            //si no hay movimiento, desactivar la animación de movimiento
             animator.SetTrigger("Idle");
             audioSource.volume = 0f;
         }

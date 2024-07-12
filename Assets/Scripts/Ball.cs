@@ -39,7 +39,6 @@ public class Ball : MonoBehaviour
         animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
 
-        // Asegura que solo haya una instancia de la pelota
         if (Instance == null)
             Instance = this;
         else
@@ -226,12 +225,11 @@ public class Ball : MonoBehaviour
         }
     }
 
-    // Método para detectar cuando la pelota sale del campo
+    //para detectar cuando la pelota sale del campo
     private void OnTriggerExit2D(Collider2D other)
     {
         if (other.CompareTag("Field")) 
         {
-            // Guarda la posición de salida de la pelota
             lastExitPosition = transform.position;
 
             if (lastExitPosition.x < bordeizq || lastExitPosition.x > bordeder) //si sale por los lados, saque de banda
@@ -302,13 +300,18 @@ public class Ball : MonoBehaviour
             rb.AddForce(direction * passForceKicks, ForceMode2D.Impulse);
         }
 
+        //desparalizar si hay alguien paralizado
+        foreach (Rival rival in teamRival.teamRivals)
+        {
+            if (rival.rivalStates.isParalyzed) rival.rivalStates.Deparalyze();
+        }
     }
 
     private IEnumerator StopGameForBandaSaque()
     {
-        yield return new WaitForSecondsRealtime(0.5f);  // Espera medio segundo
+        yield return new WaitForSecondsRealtime(0.5f);
 
-        // Sitúa la pelota en la posición de salida
+        //sitúa la pelota en la posición de salida
         transform.position = lastExitPosition;
 
         GameManager.Instance.ResetPositions();
@@ -324,7 +327,7 @@ public class Ball : MonoBehaviour
             nearPlayers[0].transform.position = lastExitPosition;
             //poner receptores si hace falta
         }
-        else       //si la tira fuera el jugador, saca el equipo rival
+        else //si la tira fuera el jugador, saca el equipo rival
         {
             teamRival.teamPossession = true;
             team.teamPossession = false;

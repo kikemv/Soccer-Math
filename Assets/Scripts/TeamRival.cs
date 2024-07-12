@@ -14,10 +14,6 @@ public class TeamRival : MonoBehaviour
         teamRivals = GetComponentsInChildren<Rival>().ToList();
     }
 
-    private void Start()
-    {
-    }
-
     private void Update()
     {
         PossessionCheck();

@@ -22,9 +22,14 @@ public class SettingsMenu : MonoBehaviour
 
     public Animator transition;
 
+    public AudioClip menuClick;
+
+    private Color selectedColor = new Color(0.7f, 0.7f, 0.7f, 1f);
+    private Color defaultColor = Color.white;
+
     private void Start()
     {
-        // Inicializar UI con valores actuales de GameSettings
+        //inicializar con valores de GameSettings
         durationSlider.value = GameSettings.Instance.GetMatchDuration();
         soundVolumeSlider.value = GameSettings.Instance.GetSoundVolume() * 100;
         musicVolumeSlider.value = GameSettings.Instance.GetMusicVolume() * 100;
@@ -33,12 +38,11 @@ public class SettingsMenu : MonoBehaviour
         soundText.text = (GameSettings.Instance.GetSoundVolume() * 100).ToString();
         musicText.text = (GameSettings.Instance.GetMusicVolume() * 100).ToString();
 
-        // Asignar listeners
-        playButton.onClick.AddListener(() => LoadScene(2));
-        exitButton.onClick.AddListener(() => LoadScene(0));
-        easyButton.onClick.AddListener(() => GameSettings.Instance.SetDifficulty(GameSettings.Difficulty.Easy));
-        mediumButton.onClick.AddListener(() => GameSettings.Instance.SetDifficulty(GameSettings.Difficulty.Medium));
-        hardButton.onClick.AddListener(() => GameSettings.Instance.SetDifficulty(GameSettings.Difficulty.Hard));
+        playButton.onClick.AddListener(() => { PlaySound(); LoadScene(2); });
+        exitButton.onClick.AddListener(() => { PlaySound(); LoadScene(0); });
+        easyButton.onClick.AddListener(() => { PlaySound(); SetDifficulty(GameSettings.Difficulty.Easy); });
+        mediumButton.onClick.AddListener(() => { PlaySound(); SetDifficulty(GameSettings.Difficulty.Medium); });
+        hardButton.onClick.AddListener(() => { PlaySound(); SetDifficulty(GameSettings.Difficulty.Hard); });
 
         durationSlider.onValueChanged.AddListener(value =>
         {
@@ -57,6 +61,40 @@ public class SettingsMenu : MonoBehaviour
             GameSettings.Instance.SetMusicVolume(value);
             musicText.text = value.ToString();
         });
+
+        SetDifficulty(GameSettings.Difficulty.Medium);
+    }
+
+    private void SetDifficulty(GameSettings.Difficulty difficulty)
+    {
+        GameSettings.Instance.SetDifficulty(difficulty);
+        UpdateDifficultyButtons(difficulty);
+    }
+
+    private void UpdateDifficultyButtons(GameSettings.Difficulty selectedDifficulty)
+    {
+        easyButton.GetComponent<Image>().color = defaultColor;
+        mediumButton.GetComponent<Image>().color = defaultColor;
+        hardButton.GetComponent<Image>().color = defaultColor;
+
+        //establecer el color del botón seleccionado
+        switch (selectedDifficulty)
+        {
+            case GameSettings.Difficulty.Easy:
+                easyButton.GetComponent<Image>().color = selectedColor;
+                break;
+            case GameSettings.Difficulty.Medium:
+                mediumButton.GetComponent<Image>().color = selectedColor;
+                break;
+            case GameSettings.Difficulty.Hard:
+                hardButton.GetComponent<Image>().color = selectedColor;
+                break;
+        }
+    }
+
+    private void PlaySound()
+    {
+        SoundController.Instance.PlaySound(menuClick, GameSettings.Instance.GetSoundVolume());
     }
 
     public void LoadScene(int levelIndex)

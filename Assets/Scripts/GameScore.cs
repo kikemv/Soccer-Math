@@ -45,17 +45,15 @@ public class GameScore : MonoBehaviour
     {
         if (!isPaused)
         {
-            // Actualizar el tiempo
-            currentTime += Time.deltaTime * (totalTimeFicticio / tiempoReal); // Ajuste del tiempo ficticio al tiempo real
+            //actualizar el tiempo
+            currentTime += Time.deltaTime * (totalTimeFicticio / tiempoReal);
             if (currentTime >= totalTimeFicticio)
             {
                 currentTime = totalTimeFicticio;
-                PauseGame(); // Pausa el juego cuando se alcanza el tiempo ficticio máximo
+                PauseGame();
                 EndGame();
             }
             UpdateTimeUI();
-
-            // Actualizar otros elementos del UI si es necesario
         }
 
         pointsUI.text = "PTS: " + GameManager.Instance.points.ToString();

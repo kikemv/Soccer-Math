@@ -27,7 +27,7 @@ public class Rival : MonoBehaviour
 
     public RivalState rivalStates;
 
-    // Barra de carga para el disparo del rival
+    //shoot bar
     public Slider shootingSlider;
     public float shootingChargeRate = 0.2f;
     public float maxShootingCharge = 1.0f;
@@ -44,7 +44,7 @@ public class Rival : MonoBehaviour
         rivalStates = GetComponent<RivalState>();
         ballPosition = transform.Find("BallPossition");
         numberSprite = transform.Find("number").gameObject.GetComponent<SpriteRenderer>();
-        shootingChargeRate = 0.4f;
+        shootingChargeRate = 0.2f;
     }
 
     void Start()
@@ -62,7 +62,6 @@ public class Rival : MonoBehaviour
         else startPosition = new Vector3(zone.position.x, zone.position.y + offset / 6, zone.position.z);
         ResetPosition();
 
-        // Desactivar la Slider al principio
         shootingSlider.gameObject.SetActive(false);
     }
 
@@ -81,7 +80,6 @@ public class Rival : MonoBehaviour
                 else if(!GameManager.Instance.miniGameActive && !GameManager.Instance.decisionActive
                          && !GameManager.Instance.shootGameActive)
                 {
-                    Debug.Log("Llamando al shootgame");
                     GameManager.Instance.StartShootGame();
                 }
             }
@@ -99,8 +97,8 @@ public class Rival : MonoBehaviour
 
     public void ResetShoot()
     {
-        shootingCharge = 0.0f; // Reiniciar la carga del disparo
-        shootingSlider.value = 0.0f; // Reiniciar la posición de la Slider
+        shootingCharge = 0.0f; 
+        shootingSlider.value = 0.0f;
         shootingSlider.gameObject.SetActive(false);
     }
 

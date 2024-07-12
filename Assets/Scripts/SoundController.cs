@@ -9,7 +9,7 @@ public class SoundController : MonoBehaviour
     public AudioSource soundSource;
     public AudioSource musicSource;
 
-    private const float MinVolume = 0.1f; // Define el volumen mínimo permitido
+    private const float MinVolume = 0.1f;
 
     private void Awake()
     {
@@ -31,7 +31,8 @@ public class SoundController : MonoBehaviour
     {
         if (GameSettings.Instance.soundVolume != 0)
         {
-            volume = Mathf.Max(volume, MinVolume); // Asegura que el volumen no sea inferior a MinVolume
+            //asegura que el volumen no sea inferior al minimo
+            volume = Mathf.Max(volume, MinVolume);
             soundSource.PlayOneShot(sound, volume);
         }
     }
@@ -40,7 +41,8 @@ public class SoundController : MonoBehaviour
     {
         if (GameSettings.Instance.musicVolume != 0)
         {
-            volume = Mathf.Max(volume, MinVolume); // Asegura que el volumen no sea inferior a MinVolume
+            //asegura que el volumen no sea inferior al minimo
+            volume = Mathf.Max(volume, MinVolume);
             musicSource.clip = music;
             musicSource.loop = true;
             musicSource.volume = volume;

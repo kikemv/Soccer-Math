@@ -13,7 +13,7 @@ public class Team : MonoBehaviour
     private void Awake()
     {
         teamPlayers = GetComponentsInChildren<Player>().ToList();
-        currentPlayer = new List<Player>(); // Asegura que currentPlayer no sea null
+        currentPlayer = new List<Player>();
     }
 
     private void Start()

@@ -71,7 +71,6 @@ public class MathGame : MonoBehaviour
         currentTime = totalTime;
         startPos = new Vector2(0, -111);
         endPos = new Vector2(-timeBar.rect.width, startPos.y);
-        // Calcula la posición final hacia la izquierda
 
     }
 
@@ -81,15 +80,13 @@ public class MathGame : MonoBehaviour
         {
             currentTime -= Time.deltaTime;
 
-            // Realiza diferentes acciones dependiendo del tiempo restante
             if (currentTime > 15.0f)
             {
-                //nada
                 timeBar.gameObject.SetActive(false);
             }
             else
             {
-                // Interpola entre la posición inicial y final según el tiempo restante
+                //interpola la posición inicial y final segun el tiempo restante
                 timeBar.gameObject.SetActive(true);
                 float normalizedTime = Mathf.Clamp01(currentTime / 15.0f);
                 timeBar.anchoredPosition = Vector2.Lerp(endPos, startPos, normalizedTime);
@@ -128,6 +125,7 @@ public class MathGame : MonoBehaviour
                 team.currentPlayer[0].playerMovement.ActivateParalysis();
                 Ball.Instance.attachedPlayer = null;
                 Ball.Instance.isBallAttached = false;
+                Ball.Instance.attachedRival = team.currentPlayer[0].currentRival;
            }
             
             
@@ -291,7 +289,7 @@ public class MathGame : MonoBehaviour
 
         }
 
-        playerInputField.text = ""; // Limpia el campo de entrada del jugador
+        playerInputField.text = ""; //limpia el campo de entrada del jugador
         playerInputField.Select();
     }
 }

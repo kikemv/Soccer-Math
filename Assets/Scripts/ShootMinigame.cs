@@ -5,16 +5,16 @@ using UnityEngine.UI;
 
 public class ShootMinigame : MonoBehaviour
 {
-    public Image goalBackground; // Imagen de fondo de la portería
+    public Image goalBackground;
 
     public Animator animator;
 
     //cuenta atras
-    public RectTransform timeBar; // Referencia al RectTransform de la barra de tiempo
-    public Vector2 startPos; // Posición inicial de la barra de tiempo
-    public Vector2 endPos; // Posición final de la barra de tiempo
-    private float totalTime = 20f; // Tiempo total de la cuenta atrás
-    private float currentTime; // Tiempo actual restante
+    public RectTransform timeBar;
+    public Vector2 startPos;
+    public Vector2 endPos;
+    private float totalTime = 20f;
+    private float currentTime;
 
     private Team team;
     private TeamRival teamRival;
@@ -53,7 +53,7 @@ public class ShootMinigame : MonoBehaviour
     {
         currentTime = totalTime;
         startPos = new Vector2(0, -124);
-        endPos = new Vector2(-timeBar.rect.width, startPos.y); // Calcula la posición final hacia la izquierda
+        endPos = new Vector2(-timeBar.rect.width, startPos.y);
         GenerateShootProblem();
 
     }
@@ -64,14 +64,13 @@ public class ShootMinigame : MonoBehaviour
         {
             currentTime -= Time.deltaTime;
 
-            // Realiza diferentes acciones dependiendo del tiempo restante
             if (currentTime > 15.0f)
             {
                 //nada
             }
             else
             {
-                // Interpola entre la posición inicial y final según el tiempo restante
+                //interpola la posición inicial y final según el tiempo restante
                 timeBar.gameObject.SetActive(true);
                 float normalizedTime = Mathf.Clamp01(currentTime / 15.0f);
                 timeBar.anchoredPosition = Vector2.Lerp(endPos, startPos, normalizedTime);
@@ -80,7 +79,6 @@ public class ShootMinigame : MonoBehaviour
         else if (!timeEnded)
         {
             timeEnded = true;
-            Debug.Log("Tiempo acabado");
             if (localShoot)
             {
                 animator.SetTrigger("ltsave");
@@ -319,45 +317,48 @@ public class ShootMinigame : MonoBehaviour
 
         }
 
-        // Genera respuestas incorrectas cercanas a la respuesta correcta
-        int minIncorrect = correctAnswer - 3; // Valor mínimo para las respuestas incorrectas
-        int maxIncorrect = correctAnswer + 3; // Valor máximo para las respuestas incorrectas
-        List<int> incorrectAnswers = new List<int>(); // Lista para almacenar las respuestas incorrectas
+        //genera respuestas incorrectas cercanas a la respuesta correcta
+        int minIncorrect = correctAnswer - 3;
+        int maxIncorrect = correctAnswer + 3;
+        List<int> incorrectAnswers = new List<int>();
         for (int i = minIncorrect; i <= maxIncorrect; i++)
         {
-            if (i != correctAnswer) // Evita que la respuesta incorrecta coincida con la correcta
+            if (i != correctAnswer) //evita que la respuesta incorrecta coincida con la correcta
             {
                 incorrectAnswers.Add(i);
             }
         }
 
-        // Asigna las respuestas incorrectas a las opciones disponibles
+        //asigna las respuestas incorrectas a las opciones disponibles
         List<Image> optionImages = new List<Image> { option1, option2, option3, option4 };
+
+        //margen para cuando la opcion es negativa
+        int margen = 5;
+
         for (int i = 0; i < 4; i++)
         {
             if (i < incorrectAnswers.Count)
             {
-                // Selecciona una respuesta incorrecta aleatoria
                 int randomIndex = Random.Range(0, incorrectAnswers.Count);
                 int incorrectAnswer = incorrectAnswers[randomIndex];
-                // Asigna la respuesta incorrecta a una imagen de opción
+                
                 if (incorrectAnswer < 0) //si una opcion es negativa, que salga el sprite de otro numero
                 {
-                    optionImages[i].sprite = GetSpriteForNumber(correctAnswer + 5);
+                    optionImages[i].sprite = GetSpriteForNumber(correctAnswer + margen++);
                 }
                 else
                 {
-                    optionImages[i].sprite = GetSpriteForNumber(incorrectAnswer); // Obtener sprite para el número
+                    optionImages[i].sprite = GetSpriteForNumber(incorrectAnswer);
                 }
-                incorrectAnswers.RemoveAt(randomIndex); // Elimina la respuesta incorrecta usada
+                incorrectAnswers.RemoveAt(randomIndex);
             }
-            else
+            /*else
             {
                 // Si no hay suficientes respuestas incorrectas, deja la opción vacía
                 optionImages[i].sprite = null;
-            }
+            }*/
         }
-        // Busca la primera opción que aún no tenga asignada una imagen y asigna la respuesta correcta a esa opción
+        //asignar la correcta a la opcion libre
         foreach (Image optionImage in optionImages)
         {
             if (optionImage.sprite == null)
@@ -366,26 +367,24 @@ public class ShootMinigame : MonoBehaviour
                 break;
             }
         }
-
     }
+
     private int GetCorrectOptionIndex()
     {
-        // Obtiene las imágenes de las opciones en una lista
         List<Image> optionImages = new List<Image> { option1, option2, option3, option4 };
 
-        // Itera sobre las imágenes de las opciones para encontrar la que contiene la respuesta correcta
+        //buscar opcion correcta
         for (int i = 0; i < optionImages.Count; i++)
         {
             if (optionImages[i].sprite == GetSpriteForNumber(correctAnswer))
             {
-                return i; // Devuelve el índice de la opción que contiene la respuesta correcta
+                return i;
             }
         }
 
-        return -1; // Si no se encuentra la respuesta correcta, devuelve -1
+        return -1; //si no se encuentra la respuesta correcta, devuelve -1
     }
 
-    // Método para obtener el sprite asociado a un número
     private Sprite GetSpriteForNumber(int number)
     {
         string spriteName = number.ToString();

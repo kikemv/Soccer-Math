@@ -18,8 +18,8 @@ public class GameSettings : MonoBehaviour
     public Difficulty difficulty = Difficulty.Easy;
     public int matchDurationInMinutes = 5;
 
-    public float soundVolume = 100f; // Volumen de efectos de sonido
-    public float musicVolume = 100f; // Volumen de la música
+    public float soundVolume = 100f;
+    public float musicVolume = 100f;
 
     public Animator transition;
     public AudioClip menuMusic;
@@ -49,7 +49,7 @@ public class GameSettings : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        // Reproduce la música en ajustes
+        //para que suene la musica en settings scene
         if (scene.buildIndex == 1)
         {
             if (SoundController.Instance != null)

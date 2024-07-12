@@ -1478,9 +1478,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -104732333, guid: 2d8231d5fdc07e94aa5dd76d27431d9e, type: 3}
+  m_Sprite: {fileID: -1222559643, guid: 5828c0b001f7b7c4f8362c8730c6f202, type: 3}
   m_Type: 0
-  m_PreserveAspect: 1
+  m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1
@@ -2002,7 +2002,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: -2.592842, y: 0, z: -6.6261406, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -2475,6 +2475,7 @@ MonoBehaviour:
   musicVolumeSlider: {fileID: 1457518990}
   musicText: {fileID: 1455827101}
   transition: {fileID: 50823557}
+  menuClick: {fileID: 8300000, guid: cf6c0e7fbef9449c98a0cdb5ea0c4d9f, type: 3}
 --- !u!4 &1804374551
 Transform:
   m_ObjectHideFlags: 0
