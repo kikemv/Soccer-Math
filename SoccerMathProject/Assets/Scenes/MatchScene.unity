@@ -14812,7 +14812,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Correct operations: 3
+  m_text: 'Number of Correct operations: 3
 
     Total points scored: 600'
   m_isRightToLeft: 0

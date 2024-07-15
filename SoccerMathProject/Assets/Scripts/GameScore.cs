@@ -53,7 +53,7 @@ public class GameScore : MonoBehaviour
                 PauseGame();
                 EndGame();
             }
-            UpdateTimeUI();
+            else UpdateTimeUI();
         }
 
         pointsUI.text = "PTS: " + GameManager.Instance.points.ToString();
@@ -90,29 +90,28 @@ public class GameScore : MonoBehaviour
 
     private void EndGame()
     {
+        GameManager.Instance.PauseGame();
         SoundController.Instance.PlaySound(pitidoFinal, GameSettings.Instance.soundVolume - 0.2f);
         finalPanel.SetActive(true);
         string resultado = localGoals + " - " + awayGoals;
-        string points = GameManager.Instance.points.ToString();
         string opSolved = GameManager.Instance.operationsSolved.ToString();
 
         if (localGoals > awayGoals)
         {
             GameManager.Instance.points += 300;
             finalText.text = "Congratulations. You have won " + resultado;
-            finalPanel.GetComponent<Image>().color = Color.green;
         }
         else if (localGoals < awayGoals)
         {
             GameManager.Instance.points += 100;
             finalText.text = "You have lost " + resultado;
-            finalPanel.GetComponent<Image>().color = Color.red;
         }
         else
         {
             finalText.text = "Match ended in a draw";
-            finalPanel.GetComponent<Image>().color = Color.blue;
         }
-        scoreText.text = "Number of correct operations: " + opSolved + "\nTotal points scored: " + points;
+
+        string points = GameManager.Instance.points.ToString();
+        scoreText.text = "Correct operations: " + opSolved + "\nTotal points scored: " + points;
     }
 }

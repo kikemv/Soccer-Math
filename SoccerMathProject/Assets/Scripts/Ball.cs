@@ -232,6 +232,8 @@ public class Ball : MonoBehaviour
         {
             lastExitPosition = transform.position;
 
+            isBallAttached = false;
+
             if (lastExitPosition.x < bordeizq || lastExitPosition.x > bordeder) //si sale por los lados, saque de banda
             {
                 StartCoroutine(StopGameForBandaSaque());
